@@ -14,7 +14,7 @@ class Backup:
     def create_backup_plan():
         client = boto3.client('backup',
                               aws_access_key_id='AKIA3IUFDHZD65DZ2BQX',
-                              aws_secret_access_key='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',)
+                              aws_secret_access_key='WeIAsfplw4+lLLgE+6gdiWqdmCgRSvs7AS3Q6539')
 
         BACKUP_PLAN_NAME = "12hrs"
         RULE_NAME = "RunEvery12Hrs"
@@ -44,13 +44,53 @@ class Backup:
             BACKUP_PLAN_ID = response['BackupPlanId']
             print("Successfully created backup plan")
         except:
-            print("Error has occur during deletion")
+            print("Error has occur during creation")
 
         # Delete the backup plan just created
+        # try:
+        #     response = client.delete_backup_plan(
+        #         BackupPlanId=BACKUP_PLAN_ID
+        #     )
+        #     print("Successfully deleted plan")
+        # except:
+        #     print("Error has occur during deletion")
+
+    def create_report_plan():
+
+        client = boto3.client('backup',
+                              aws_access_key_id='AKIA3IUFDHZD65DZ2BQX',
+                              aws_secret_access_key='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')
+
+        REPORT_PLAN_NAME = 'backupreport'
+        S3_BUCKET_NAME = 'backups3fromvs'
+        FORMAT = 'JSON'
+        # RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT
+        REPORT_TEMPLATE = 'BACKUP_JOB_REPORT'
+
         try:
-            response = client.delete_backup_plan(
-                BackupPlanId=BACKUP_PLAN_ID
+            response = client.create_report_plan(
+                ReportPlanName=REPORT_PLAN_NAME,
+                # ReportPlanDescription='string',
+                ReportDeliveryChannel={
+                    'S3BucketName': S3_BUCKET_NAME,
+                    # 'S3KeyPrefix': 'string',
+                    'Formats': [
+                        FORMAT,
+                    ]
+                },
+                ReportSetting={
+                    'ReportTemplate': REPORT_TEMPLATE,
+                    # 'FrameworkArns': [
+                    #     'string',
+                    # ],
+                    # 'NumberOfFrameworks': 123
+                },
+                # ReportPlanTags={
+                #     'string': 'string'
+                # },
+                # IdempotencyToken='string'
             )
-            print("Successfully deleted plan")
+            print("Successfully created backup report")
+            print(response)
         except:
-            print("Error has occur during deletion")
+            print("Error has occur during creation of report plan")
