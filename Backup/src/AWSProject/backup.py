@@ -11,16 +11,6 @@ class Backup:
 
     def create_backup_plan(self, backup_plan_name, rule_name, start_window_minutes, completion_window_minutes, schedule_expression, target_backup_vault_name):
 
-        # BACKUP_PLAN_NAME = "12hrs"
-        # RULE_NAME = "RunEvery12Hrs"
-        # # Completion Window Minutes (must be 60 > Start Window)
-        # COMPLETION_WINDOW_MINUTES = 120
-        # START_WINDOW_MINUTES = 60  # Start Window Minutes (minimum value = 60)
-        # # Schedule Expression (example: cron(0 12 * * ? *))
-        # SCHEDULE_EXPRESSION = "cron(0 12 * * ? *)"
-        # # Target Backup Vault Name (example: "Default")
-        # TARGET_BACKUP_VAULT_NAME = "Default"
-
         try:
             response = self.client.create_backup_plan(
                 BackupPlan={
@@ -50,27 +40,21 @@ class Backup:
         # except NameError:
         #     print("Error has occur during deletion")
 
-    def create_report_plan(self):
-
-        REPORT_PLAN_NAME = 'backupreport'
-        S3_BUCKET_NAME = 'backups3fromvs'
-        FORMAT = {'JSON', 'CSV'}
-        # RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT
-        REPORT_TEMPLATE = 'BACKUP_JOB_REPORT'
+    def create_report_plan(self, bucket_name, report_plan_name, format, report_template):
 
         try:
             response = self.client.create_report_plan(
-                ReportPlanName=REPORT_PLAN_NAME,
+                ReportPlanName=report_plan_name,
                 # ReportPlanDescription='string',
                 ReportDeliveryChannel={
-                    'S3BucketName': S3_BUCKET_NAME,
+                    'S3BucketName': bucket_name,
                     # 'S3KeyPrefix': 'string',
                     'Formats': [
-                        FORMAT,
+                        format,
                     ]
                 },
                 ReportSetting={
-                    'ReportTemplate': REPORT_TEMPLATE,
+                    'ReportTemplate': report_template,
                     # 'FrameworkArns': [
                     #     'string',
                     # ],
