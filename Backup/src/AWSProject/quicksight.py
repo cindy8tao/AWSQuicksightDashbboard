@@ -10,9 +10,7 @@ class Quicksight:
         pass
 
     def create_dataset():
-        client = boto3.client('quicksight',
-                              aws_access_key_id='AKIA3IUFDHZD65DZ2BQX',
-                              aws_secret_access_key='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',)
+        client = boto3.client('quicksight')
         response = client.create_data_set(
             AwsAccountId='string',
             DataSetId='string',

@@ -12,9 +12,7 @@ class Backup:
         pass
 
     def create_backup_plan():
-        client = boto3.client('backup',
-                              aws_access_key_id='AKIA3IUFDHZD65DZ2BQX',
-                              aws_secret_access_key='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')
+        client = boto3.client('backup')
 
         BACKUP_PLAN_NAME = "12hrs"
         RULE_NAME = "RunEvery12Hrs"
@@ -43,7 +41,7 @@ class Backup:
             )
             BACKUP_PLAN_ID = response['BackupPlanId']
             print("Successfully created backup plan")
-        except:
+        except NameError:
             print("Error has occur during creation")
 
         # Delete the backup plan just created
@@ -52,14 +50,12 @@ class Backup:
         #         BackupPlanId=BACKUP_PLAN_ID
         #     )
         #     print("Successfully deleted plan")
-        # except:
+        # except NameError:
         #     print("Error has occur during deletion")
 
     def create_report_plan():
 
-        client = boto3.client('backup',
-                              aws_access_key_id='AKIA3IUFDHZD65DZ2BQX',
-                              aws_secret_access_key='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')
+        client = boto3.client('backup')
 
         REPORT_PLAN_NAME = 'backupreport'
         S3_BUCKET_NAME = 'backups3fromvs'
@@ -92,5 +88,5 @@ class Backup:
             )
             print("Successfully created backup report")
             print(response)
-        except:
+        except NameError:
             print("Error has occur during creation of report plan")
