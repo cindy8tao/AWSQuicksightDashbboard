@@ -84,9 +84,6 @@ def main():
     #####################################################
 
     print("Welcome to create your Quicksight Backup Dashboard ")
-    # ACCOUNT_ID = '774446988871'
-    # account_id = input("Please enter your account_id: ")
-    # account_id = '774446988871'
 
     to_create_AWS_resource = input(
         "Would you like to create a AWS resource? (Yes/No) ")
