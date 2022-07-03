@@ -1,6 +1,7 @@
 import boto3
 import backup
 import s3
+import ec2
 
 #####################################################
 # Create the required clients and resources         #
@@ -8,6 +9,7 @@ import s3
 s3_client = boto3.client('s3')
 s3_resource = boto3.resource('s3')
 backup_client = boto3.client('backup')
+ec2_resource = boto3.resource('ec2')
 # account_id = input("Please enter your AWS account_id: ")
 account_id = '774446988871'
 
@@ -32,6 +34,13 @@ def create_s3_bucket():
         path = input("File path: ")
         key = input("File Name: ")
         s3Class.upload_to_S3(path, bucket_name, key)
+
+
+def create_ec2_instance():
+    print("Creating a EC2 instance ... ")
+    ami_image_id = input("Name of AMI image id (ex: ami-0cff7528ff583bf9a): ")
+    ec2Class = ec2.EC2(account_id, ec2_resource)
+    ec2Class.create_instances(ami_image_id)
 
 
 def create_backup_plan():
@@ -93,7 +102,13 @@ def main():
             "Which resources would you like to create? (EC2, RDS, S3) ")
 
         if (resource.lower() == 'ec2'):
-            pass
+            create_ec2_instance()
+            to_create_another_ec2 = input(
+                "Would you like to create another EC2 instance? (Yes/No) ")
+            while(to_create_another_ec2.lower() == 'yes'):
+                create_ec2_instance()
+                to_create_another_ec2 = input(
+                    "Would you like to create another EC2 instance? (Yes/No) ")
         elif (resource.lower() == 'rds'):
             pass
         elif (resource.lower() == 's3'):
