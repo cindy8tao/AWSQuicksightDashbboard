@@ -9,7 +9,7 @@ class Quicksight:
     def __init__(self):
         pass
 
-    def create_dataset():
+    def create_dataset(self):
         client = boto3.client('quicksight')
         response = client.create_data_set(
             AwsAccountId='string',

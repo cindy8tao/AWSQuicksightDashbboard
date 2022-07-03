@@ -2,6 +2,7 @@ import boto3
 import backup
 import s3
 import ec2
+import rds
 
 #####################################################
 # Create the required clients and resources         #
@@ -10,6 +11,7 @@ s3_client = boto3.client('s3')
 s3_resource = boto3.resource('s3')
 backup_client = boto3.client('backup')
 ec2_resource = boto3.resource('ec2')
+rds_client = boto3.client('rds')
 # account_id = input("Please enter your AWS account_id: ")
 account_id = '774446988871'
 
@@ -34,6 +36,22 @@ def create_s3_bucket():
         path = input("File path: ")
         key = input("File Name: ")
         s3Class.upload_to_S3(path, bucket_name, key)
+
+
+def create_rds_instance():
+    print("Creating a RDS instance ... ")
+    db_instance_class = input(
+        "DB instance class (example: db.t2.micro, db.m5.large): ")
+    db_instance_identifier = input(
+        "DB instance identifier (example: database-instance-01): ")
+    engine = input("Engine (example: aurora, mysql, postgres): ")
+    allocated_storage = int(input("Allocated Storage (minimum integer 5): "))
+    master_username = input("Master Username (example: testpw0021): ")
+    master_password = input("Master Password: ")
+
+    rdsClass = rds.RDS(account_id, rds_client)
+    rdsClass.create_db_instance(db_instance_class, db_instance_identifier,
+                                engine, allocated_storage, master_username, master_password)
 
 
 def create_ec2_instance():
@@ -110,7 +128,13 @@ def main():
                 to_create_another_ec2 = input(
                     "Would you like to create another EC2 instance? (Yes/No) ")
         elif (resource.lower() == 'rds'):
-            pass
+            create_rds_instance()
+            to_create_another_rds = input(
+                "Would you like to create another RDS instance? (Yes/No) ")
+            while(to_create_another_rds.lower() == 'yes'):
+                create_rds_instance()
+                to_create_another_rds = input(
+                    "Would you like to create another RDS instance? (Yes/No) ")
         elif (resource.lower() == 's3'):
             create_s3_bucket()
             to_create_another_bucket = input(
