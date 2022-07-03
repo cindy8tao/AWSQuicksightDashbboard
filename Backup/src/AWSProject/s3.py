@@ -1,5 +1,3 @@
-import datetime
-from urllib.request import Request
 import boto3
 import json
 

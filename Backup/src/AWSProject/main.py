@@ -10,6 +10,7 @@ def main():
     #####################################################
     s3_client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
+    backup_client = boto3.client('backup')
 
     #####################################################
     # Ask user for inputs                               #
@@ -57,7 +58,29 @@ def main():
     #####################################################
 
     bucket_name = "backupreportfromvscode"
+    s3Class = s3.S3(account_id, s3_client, s3_resource)
     s3Class.create_bucket(bucket_name)
+    print("Creating backup plan ...")
+    print("Please enter the following: ")
+    backup_plan_name = input("Backup Plan Name: ")
+    rule_name = input("Rule Name: ")
+    start_window_minutes = input("Start Window Minutes (minimum value = 60): ")
+    completion_window_minutes = input(
+        "Completion Window Minutes (must be 60 > Start Window): ")
+    schedule_expression = input(
+        "Schedule Expression (example: cron(0 12 * * ? *)): ")
+    target_backup_vault_name = input(
+        "Target Backup Vault Name (example: Default): ")
+
+    # BACKUP_PLAN_NAME = "12hrs"
+    # RULE_NAME = "RunEvery12Hrs"
+    # # Completion Window Minutes (must be 60 > Start Window)
+    # COMPLETION_WINDOW_MINUTES = 120
+    # START_WINDOW_MINUTES = 60  # Start Window Minutes (minimum value = 60)
+    # # Schedule Expression (example: cron(0 12 * * ? *))
+    # SCHEDULE_EXPRESSION = "cron(0 12 * * ? *)"
+    # # Target Backup Vault Name (example: "Default")
+    # TARGET_BACKUP_VAULT_NAME = "Default"
 
     # backup.Backup.create_backup_plan()
     # backup.Backup.create_report_plan()

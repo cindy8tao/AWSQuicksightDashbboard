@@ -3,38 +3,35 @@ from urllib.request import Request
 import boto3
 import json
 
-# Let's use Amazon S3
-
 
 class Backup:
 
-    def __init__(self):
-        pass
+    def __init__(self, client):
+        self.client = client
 
-    def create_backup_plan():
-        client = boto3.client('backup')
+    def create_backup_plan(self, backup_plan_name, rule_name, start_window_minutes, completion_window_minutes, schedule_expression, target_backup_vault_name):
 
-        BACKUP_PLAN_NAME = "12hrs"
-        RULE_NAME = "RunEvery12Hrs"
-        # Completion Window Minutes (must be 60 > Start Window)
-        COMPLETION_WINDOW_MINUTES = 120
-        START_WINDOW_MINUTES = 60  # Start Window Minutes (minimum value = 60)
-        # Schedule Expression (example: cron(0 12 * * ? *))
-        SCHEDULE_EXPRESSION = "cron(0 12 * * ? *)"
-        # Target Backup Vault Name (example: "Default")
-        TARGET_BACKUP_VAULT_NAME = "Default"
+        # BACKUP_PLAN_NAME = "12hrs"
+        # RULE_NAME = "RunEvery12Hrs"
+        # # Completion Window Minutes (must be 60 > Start Window)
+        # COMPLETION_WINDOW_MINUTES = 120
+        # START_WINDOW_MINUTES = 60  # Start Window Minutes (minimum value = 60)
+        # # Schedule Expression (example: cron(0 12 * * ? *))
+        # SCHEDULE_EXPRESSION = "cron(0 12 * * ? *)"
+        # # Target Backup Vault Name (example: "Default")
+        # TARGET_BACKUP_VAULT_NAME = "Default"
 
         try:
-            response = client.create_backup_plan(
+            response = self.client.create_backup_plan(
                 BackupPlan={
-                    'BackupPlanName': BACKUP_PLAN_NAME,
+                    'BackupPlanName': backup_plan_name,
                     'Rules': [
                         {
-                            'RuleName': RULE_NAME,
-                            'TargetBackupVaultName': TARGET_BACKUP_VAULT_NAME,
-                            'ScheduleExpression': SCHEDULE_EXPRESSION,
-                            'StartWindowMinutes': START_WINDOW_MINUTES,
-                            'CompletionWindowMinutes': COMPLETION_WINDOW_MINUTES,
+                            'RuleName': rule_name,
+                            'TargetBackupVaultName': target_backup_vault_name,
+                            'ScheduleExpression': schedule_expression,
+                            'StartWindowMinutes': start_window_minutes,
+                            'CompletionWindowMinutes': completion_window_minutes,
                         }
                     ]
                 }
@@ -53,9 +50,7 @@ class Backup:
         # except NameError:
         #     print("Error has occur during deletion")
 
-    def create_report_plan():
-
-        client = boto3.client('backup')
+    def create_report_plan(self):
 
         REPORT_PLAN_NAME = 'backupreport'
         S3_BUCKET_NAME = 'backups3fromvs'
@@ -64,7 +59,7 @@ class Backup:
         REPORT_TEMPLATE = 'BACKUP_JOB_REPORT'
 
         try:
-            response = client.create_report_plan(
+            response = self.client.create_report_plan(
                 ReportPlanName=REPORT_PLAN_NAME,
                 # ReportPlanDescription='string',
                 ReportDeliveryChannel={
