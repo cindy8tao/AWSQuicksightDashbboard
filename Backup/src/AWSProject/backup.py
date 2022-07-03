@@ -66,6 +66,5 @@ class Backup:
                 # IdempotencyToken='string'
             )
             print("Successfully created backup report")
-            print(response)
         except NameError:
             print("Error has occur during creation of report plan")
