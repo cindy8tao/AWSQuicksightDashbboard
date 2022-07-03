@@ -91,7 +91,7 @@ def main():
     to_create_AWS_resource = input(
         "Would you like to create a AWS resource? (Yes/No) ")
 
-    if (to_create_AWS_resource.lower() == "yes"):
+    while (to_create_AWS_resource.lower() == "yes"):
         resource = input(
             "Which resources would you like to create? (EC2, RDS, S3) ")
 
@@ -107,6 +107,9 @@ def main():
                 create_s3_bucket()
                 to_create_another_bucket = input(
                     "Would you like to create another bucket? (Yes/No) ")
+
+        to_create_AWS_resource = input(
+            "Would you like to create a AWS resource? (Yes/No) ")
 
     create_backup_plan()
     to_create_another_backup_plan = input(
