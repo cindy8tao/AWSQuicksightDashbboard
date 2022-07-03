@@ -5,8 +5,15 @@ import s3
 
 def main():
 
+    #####################################################
+    # Create the required clients and resources         #
+    #####################################################
     s3_client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
+
+    #####################################################
+    # Ask user for inputs                               #
+    #####################################################
 
     print("Welcome to create your Quicksight Backup Dashboard ")
     # ACCOUNT_ID = '774446988871'
@@ -35,6 +42,19 @@ def main():
             if(version_enabled.lower() == 'yes'):
                 s3Class.bucket_version()
                 s3Class.put_bucket_policy()
+
+            to_upload_file = input(
+                "Would you like to upload a file? (Yes/No)")
+            if(to_upload_file.lower() == "yes"):
+                # path = '/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/text.txt'
+                # key = 'hello.txt'
+                path = input("File path: ")
+                key = input("File Name: ")
+                s3Class.upload_to_S3(path, key)
+
+    #####################################################
+    # Create backup report and send over to S3 bucket   #
+    #####################################################
 
                 # backup.Backup.create_backup_plan()
                 # backup.Backup.create_report_plan()

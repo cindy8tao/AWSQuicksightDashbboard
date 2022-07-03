@@ -18,14 +18,11 @@ class S3:
             print(bucket.name)
 
     def create_bucket(self):
+        acl = 'private'  # 'private'|'public-read'|'public-read-write'|'authenticated-read'
 
-        ACL = 'private'  # 'private'|'public-read'|'public-read-write'|'authenticated-read'
-        # BUCKET = 'backups3fromvs'
-
-        # client = boto3.client('s3')
         try:
             response = self.client.create_bucket(
-                ACL=ACL,
+                ACL=acl,
                 Bucket=self.bucket_name
             )
             print("Successfully created S3 bucket")
@@ -74,3 +71,10 @@ class S3:
             print("Successfully added permision to S3 bucket ")
         except NameError:
             print("Error when adding permission to S3 bucket")
+
+    def upload_to_S3(self, path, key):
+        try:
+            self.resource.meta.client.upload_file(path, self.bucket_name, key)
+            print("Successfully upload the file")
+        except NameError:
+            print("Error uploading ")
