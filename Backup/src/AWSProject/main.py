@@ -3,6 +3,7 @@ import backup
 import s3
 import ec2
 import rds
+import glue
 
 #####################################################
 # Create the required clients and resources         #
@@ -12,6 +13,7 @@ s3_resource = boto3.resource('s3')
 backup_client = boto3.client('backup')
 ec2_resource = boto3.resource('ec2')
 rds_client = boto3.client('rds')
+glue_client = boto3.client('glue')
 # account_id = input("Please enter your AWS account_id: ")
 account_id = '774446988871'
 
@@ -104,6 +106,17 @@ def create_backup_report():
         bucket_name, report_plan_name, format, report_template)
 
 
+def create_crawler():
+
+    print("Creating crawler from Glue ...")
+    print("Please enter the following: ")
+
+    crawler_name = input("Crawler Name (example: backup_crawler): ")
+    role = input("Role (example: Glue): ")
+    database_name = input("Database Name (example: backup_database): ")
+    path = input("Path (ex: s3://backupfromvscode/Backup/774446988871/us-east-1/2022/07/03/backupplanfromvscode/BACKUP_JOB_REPORT_backupplanfromvscode_2022-07-02T19:48:17Z_2022-07-03T19:48:17Z.csv) ")
+
+
 def main():
 
     #####################################################
@@ -163,6 +176,8 @@ def main():
         to_create_another_backup_report = input(
             "Would you like to create another backup report? (Yes/No) ")
 
+
+print("Thank you for using this app")
 
 if __name__ == "__main__":
     main()
