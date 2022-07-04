@@ -4,6 +4,7 @@ import s3
 import ec2
 import rds
 import glue
+import os
 
 #####################################################
 # Create the required clients and resources         #
@@ -114,7 +115,7 @@ def create_crawler():
     crawler_name = input("Crawler Name (example: backup_crawler): ")
     role = input("Role (example: Glue): ")
     database_name = input("Database Name (example: backup_database): ")
-    path = input("Path (ex: s3://backupfromvscode/Backup/774446988871/us-east-1/2022/07/03/backupplanfromvscode/BACKUP_JOB_REPORT_backupplanfromvscode_2022-07-02T19:48:17Z_2022-07-03T19:48:17Z.csv): ")
+    path = input("Path (ex: s3://abucketfromvscode/Backup/): ")
 
     glueClass = glue.Glue(account_id, glue_client)
     glueClass.create_crawler(crawler_name, role, database_name, path)
