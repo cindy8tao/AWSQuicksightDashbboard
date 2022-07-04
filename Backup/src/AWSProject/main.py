@@ -114,7 +114,10 @@ def create_crawler():
     crawler_name = input("Crawler Name (example: backup_crawler): ")
     role = input("Role (example: Glue): ")
     database_name = input("Database Name (example: backup_database): ")
-    path = input("Path (ex: s3://backupfromvscode/Backup/774446988871/us-east-1/2022/07/03/backupplanfromvscode/BACKUP_JOB_REPORT_backupplanfromvscode_2022-07-02T19:48:17Z_2022-07-03T19:48:17Z.csv) ")
+    path = input("Path (ex: s3://backupfromvscode/Backup/774446988871/us-east-1/2022/07/03/backupplanfromvscode/BACKUP_JOB_REPORT_backupplanfromvscode_2022-07-02T19:48:17Z_2022-07-03T19:48:17Z.csv): ")
+
+    glueClass = glue.Glue(account_id, glue_client)
+    glueClass.create_crawler(crawler_name, role, database_name, path)
 
 
 def main():
@@ -160,24 +163,31 @@ def main():
         to_create_AWS_resource = input(
             "Would you like to create a AWS resource? (Yes/No) ")
 
-    create_backup_plan()
+    # create_backup_plan()
     to_create_another_backup_plan = input(
-        "Would you like to create another backup plan? (Yes/No) ")
+        "Would you like to create backup plan? (Yes/No) ")
     while(to_create_another_backup_plan.lower() == 'yes'):
         create_backup_plan()
         to_create_another_backup_plan = input(
             "Would you like to create another backup plan? (Yes/No) ")
 
-    create_backup_report()
+    # create_backup_report()
     to_create_another_backup_report = input(
-        "Would you like to create another backup report? (Yes/No) ")
+        "Would you like to create backup report? (Yes/No) ")
     while(to_create_another_backup_report.lower() == "yes"):
         create_backup_report()
         to_create_another_backup_report = input(
             "Would you like to create another backup report? (Yes/No) ")
 
+    to_create_crawler = input(
+        "Would you like to create crawler? (Yes/No) ")
+    while(to_create_crawler.lower() == "yes"):
+        create_crawler()
+        to_create_crawler = input(
+            "Would you like to create another crawler? (Yes/No) ")
 
-print("Thank you for using this app")
+    print("Thank you for using this app")
+
 
 if __name__ == "__main__":
     main()
