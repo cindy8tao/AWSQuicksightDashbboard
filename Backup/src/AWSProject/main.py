@@ -4,6 +4,7 @@ import s3
 import ec2
 import rds
 import glue
+import pprint
 import os
 
 #####################################################
@@ -121,6 +122,12 @@ def create_crawler():
     glueClass.create_crawler(crawler_name, role, database_name, path)
 
 
+def list_all_tags():
+
+    backupClass = backup.Backup(backup_client)
+    backupClass.list_recovery_points_with_tags()
+
+
 def main():
 
     #####################################################
@@ -128,6 +135,8 @@ def main():
     #####################################################
 
     print("Welcome to create your Quicksight Backup Dashboard ")
+
+    # list_all_tags()
 
     to_create_AWS_resource = input(
         "Would you like to create a AWS resource? (Yes/No) ")
