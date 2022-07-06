@@ -42,6 +42,12 @@ def create_s3_bucket():
         s3Class.upload_to_S3(path, bucket_name, key)
 
 
+def list_all_buckets():
+    print("Listing S3 buckets ... ")
+    s3Class = s3.S3(account_id, s3_client, s3_resource)
+    s3Class.list_all_bucket()
+
+
 def create_rds_instance():
     print("Creating a RDS instance ... ")
     db_instance_class = input(
@@ -136,67 +142,67 @@ def main():
 
     print("Welcome to create your Quicksight Backup Dashboard ")
 
-    # list_all_tags()
+    list_all_buckets()
 
-    to_create_AWS_resource = input(
-        "Would you like to create a AWS resource? (Yes/No) ")
+    # to_create_AWS_resource = input(
+    #     "Would you like to create a AWS resource? (Yes/No) ")
 
-    while (to_create_AWS_resource.lower() == "yes"):
-        resource = input(
-            "Which resources would you like to create? (EC2, RDS, S3) ")
+    # while (to_create_AWS_resource.lower() == "yes"):
+    #     resource = input(
+    #         "Which resources would you like to create? (EC2, RDS, S3) ")
 
-        if (resource.lower() == 'ec2'):
-            create_ec2_instance()
-            to_create_another_ec2 = input(
-                "Would you like to create another EC2 instance? (Yes/No) ")
-            while(to_create_another_ec2.lower() == 'yes'):
-                create_ec2_instance()
-                to_create_another_ec2 = input(
-                    "Would you like to create another EC2 instance? (Yes/No) ")
-        elif (resource.lower() == 'rds'):
-            create_rds_instance()
-            to_create_another_rds = input(
-                "Would you like to create another RDS instance? (Yes/No) ")
-            while(to_create_another_rds.lower() == 'yes'):
-                create_rds_instance()
-                to_create_another_rds = input(
-                    "Would you like to create another RDS instance? (Yes/No) ")
-        elif (resource.lower() == 's3'):
-            create_s3_bucket()
-            to_create_another_bucket = input(
-                "Would you like to create another bucket? (Yes/No) ")
-            while(to_create_another_bucket.lower() == 'yes'):
-                create_s3_bucket()
-                to_create_another_bucket = input(
-                    "Would you like to create another bucket? (Yes/No) ")
+    #     if (resource.lower() == 'ec2'):
+    #         create_ec2_instance()
+    #         to_create_another_ec2 = input(
+    #             "Would you like to create another EC2 instance? (Yes/No) ")
+    #         while(to_create_another_ec2.lower() == 'yes'):
+    #             create_ec2_instance()
+    #             to_create_another_ec2 = input(
+    #                 "Would you like to create another EC2 instance? (Yes/No) ")
+    #     elif (resource.lower() == 'rds'):
+    #         create_rds_instance()
+    #         to_create_another_rds = input(
+    #             "Would you like to create another RDS instance? (Yes/No) ")
+    #         while(to_create_another_rds.lower() == 'yes'):
+    #             create_rds_instance()
+    #             to_create_another_rds = input(
+    #                 "Would you like to create another RDS instance? (Yes/No) ")
+    #     elif (resource.lower() == 's3'):
+    #         create_s3_bucket()
+    #         to_create_another_bucket = input(
+    #             "Would you like to create another bucket? (Yes/No) ")
+    #         while(to_create_another_bucket.lower() == 'yes'):
+    #             create_s3_bucket()
+    #             to_create_another_bucket = input(
+    #                 "Would you like to create another bucket? (Yes/No) ")
 
-        to_create_AWS_resource = input(
-            "Would you like to create a AWS resource? (Yes/No) ")
+    #     to_create_AWS_resource = input(
+    #         "Would you like to create a AWS resource? (Yes/No) ")
 
-    # create_backup_plan()
-    to_create_another_backup_plan = input(
-        "Would you like to create backup plan? (Yes/No) ")
-    while(to_create_another_backup_plan.lower() == 'yes'):
-        create_backup_plan()
-        to_create_another_backup_plan = input(
-            "Would you like to create another backup plan? (Yes/No) ")
+    # # create_backup_plan()
+    # to_create_another_backup_plan = input(
+    #     "Would you like to create backup plan? (Yes/No) ")
+    # while(to_create_another_backup_plan.lower() == 'yes'):
+    #     create_backup_plan()
+    #     to_create_another_backup_plan = input(
+    #         "Would you like to create another backup plan? (Yes/No) ")
 
-    # create_backup_report()
-    to_create_another_backup_report = input(
-        "Would you like to create backup report? (Yes/No) ")
-    while(to_create_another_backup_report.lower() == "yes"):
-        create_backup_report()
-        to_create_another_backup_report = input(
-            "Would you like to create another backup report? (Yes/No) ")
+    # # create_backup_report()
+    # to_create_another_backup_report = input(
+    #     "Would you like to create backup report? (Yes/No) ")
+    # while(to_create_another_backup_report.lower() == "yes"):
+    #     create_backup_report()
+    #     to_create_another_backup_report = input(
+    #         "Would you like to create another backup report? (Yes/No) ")
 
-    to_create_crawler = input(
-        "Would you like to create crawler? (Yes/No) ")
-    while(to_create_crawler.lower() == "yes"):
-        create_crawler()
-        to_create_crawler = input(
-            "Would you like to create another crawler? (Yes/No) ")
+    # to_create_crawler = input(
+    #     "Would you like to create crawler? (Yes/No) ")
+    # while(to_create_crawler.lower() == "yes"):
+    #     create_crawler()
+    #     to_create_crawler = input(
+    #         "Would you like to create another crawler? (Yes/No) ")
 
-    print("Thank you for using this app")
+    # print("Thank you for using this app")
 
 
 if __name__ == "__main__":

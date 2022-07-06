@@ -1,0 +1,20 @@
+{
+    "fileLocations": [
+        {
+            "URIs": [
+                "s3://sparcuser-backupreport/aws-backup-logs/backup_job_report/json/744878436330/us-east-1/2022/07/06/bos_backupjobreport_e0875b80/backup_job_report_bos_backupjobreport_e0875b80_2022-07-05t00:00:00z_2022-07-06t00:00:00z_1.json"
+            ]
+        },
+        {
+            "URIPrefixes": [
+                "s3://sparcuser-backupreport/"
+            ]
+        }
+    ],
+    "globalUploadSettings": {
+        "format": "JSON",
+        "delimiter": ",",
+        "textqualifier": "'",
+        "containsHeader": "true"
+    }
+}
