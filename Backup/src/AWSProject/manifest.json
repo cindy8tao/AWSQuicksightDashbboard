@@ -1,1 +1,20 @@
-"{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path.json\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path.json\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"JSON\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}""{\"fileLocations\": [{\"URIs\": [\"s3://backupreportwithtags/json_file_from_path.json\"]}, {\"URIPrefixes\": [\"s3://backupreportwithtags/\"]}], \"globalUploadSettings\": {\"format\": \"CSV\", \"delimiter\": \",\", \"textqualifier\": \"'\", \"containsHeader\": \"true\"}}"
+{
+    "fileLocations": [
+        {
+            "URIs": [
+                "s3://backup-report-with-tags/json_file_from_path.json"
+            ]
+        },
+        {
+            "URIPrefixes": [
+                "s3://backup-report-with-tags/"
+            ]
+        }
+    ],
+    "globalUploadSettings": {
+        "format": "CSV",
+        "delimiter": ",",
+        "textqualifier": "'",
+        "containsHeader": "true"
+    }
+}

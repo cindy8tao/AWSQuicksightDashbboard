@@ -31,9 +31,10 @@ class JsonFile:
             }
         }
 
-        manifest = json.dumps(json_file)
+        manifest = json.dumps(json_file, indent=4)
+        # manifest = json.dumps(json_file)
         with open('manifest.json', 'a') as outfile:
-            outfile.write(json.dumps(manifest))
+            outfile.write(manifest)
             outfile.close()
 
-        return manifest
+        return json_file
