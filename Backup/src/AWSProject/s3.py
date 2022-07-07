@@ -75,3 +75,14 @@ class S3:
             print("Successfully upload the file")
         except NameError:
             print("Error uploading ")
+
+    def s3_object(self, bucket_name, json_file, key):
+        try:
+            response = self.client.put_object(
+                Body=json_file,
+                Bucket=bucket_name,
+                Key=key
+            )
+            print("Successfully put object")
+        except NameError:
+            print("Error putting object ")
