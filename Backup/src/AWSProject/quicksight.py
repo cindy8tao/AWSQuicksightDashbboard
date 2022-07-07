@@ -12,8 +12,8 @@ import pprint
 
 #     def create_dataset(self):
 
-
-client = boto3.client('quicksight')
+region = 'us-east-1'
+client = boto3.client('quicksight', region_name=region)
 
 # response = client.create_data_source(
 #     AwsAccountId='774446988871',
@@ -44,58 +44,159 @@ client = boto3.client('quicksight')
 # )
 # print("complete")
 
-response = client.create_data_set(
+# response = client.create_data_set(
+#     AwsAccountId='774446988871',
+#     DataSetId='unique-id-for-new-dataset',
+#     Name='new_dataset',
+#     PhysicalTableMap={
+#         'string': {
+#             'S3Source': {
+#                 'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
+#                 'UploadSettings': {
+#                     'Format': 'CSV',
+#                     'StartFromRow': 1,
+#                     'ContainsHeader': True,
+#                     'TextQualifier': 'SINGLE_QUOTE',
+#                     'Delimiter': ','
+#                 },
+#                 'InputColumns': [
+#                     {
+#                         'Name': 'resource_arn',
+#                         'Type': 'STRING'
+#                     },
+#                     {
+#                         'Name': 'Environment',
+#                         'Type': 'STRING'
+#                     },
+#                     {
+#                         'Name': 'Department',
+#                         'Type': 'STRING'
+#                     },
+#                 ]
+#             }
+#         }
+#     },
+#     ImportMode='SPICE',
+#     Permissions=[
+#         {
+#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+#             'Actions': [
+#                 'quicksight:PassDataSet',
+#                 'quicksight:DescribeIngestion',
+#                 'quicksight:CreateIngestion',
+#                 'quicksight:UpdateDataSet',
+#                 'quicksight:DeleteDataSet',
+#                 'quicksight:DescribeDataSet',
+#                 'quicksight:CancelIngestion',
+#                 'quicksight:DescribeDataSetPermissions',
+#                 'quicksight:ListIngestions',
+#                 'quicksight:UpdateDataSetPermissions'
+#             ]
+#         },
+#     ],
+# )
+
+
+response = client.create_template(
     AwsAccountId='774446988871',
-    DataSetId='unique-id-for-new-dataset',
-    Name='new_dataset',
-    PhysicalTableMap={
-        'string': {
-            'RelationalTable': {
-                'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
-                # 'Catalog': 'string',
-                # 'Schema': 'string',
-                'Name': 'new_table',
-                'InputColumns': [
-                    {
-                        'Name': 'Environment',
-                        'Type': 'STRING'
-                    },
-                ]
-            },
-        }
-    },
-    ImportMode='SPICE',
+    TemplateId='unique-id-for-new-template',
+    Name='new_template',
     Permissions=[
         {
             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
             'Actions': [
-                'quicksight:DescribeDataSource',
-                'quicksight:DescribeDataSourcePermissions',
-                'quicksight:UpdateDataSource',
-                'quicksight:UpdateDataSourcePermissions',
-                'quicksight:DeleteDataSource',
-                'quicksight:PassDataSource'
+                'quicksight:RestoreAnalysis',
+                'quicksight:UpdateAnalysisPermissions',
+                'quicksight:DeleteAnalysis',
+                'quicksight:DescribeAnalysisPermissions',
+                'quicksight:QueryAnalysis',
+                'quicksight:DescribeAnalysis',
+                'quicksight:UpdateAnalysis'
             ]
         },
     ],
+    SourceEntity={
+        'SourceAnalysis': {
+            'Arn': 'string',
+            'DataSetReferences': [
+                {
+                    'DataSetPlaceholder': 'ds-123',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
+                },
+            ]
+        },
+        'SourceTemplate': {
+            'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
+        }
+    }
 )
+
 
 # response = client.create_analysis(
 #     AwsAccountId='774446988871',
 #     AnalysisId='unique-id-for-new-analysis',
 #     Name='new_analysis',
+#     # Parameters={
+#     #     'StringParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 'string',
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'IntegerParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 123,
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'DecimalParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 123.0,
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'DateTimeParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 datetime(2015, 1, 1),
+#     #             ]
+#     #         },
+#     #     ]
+#     # },
+#     Permissions=[
+#         {
+#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+#             'Actions': [
+#                 'quicksight:RestoreAnalysis',
+#                 'quicksight:UpdateAnalysisPermissions',
+#                 'quicksight:DeleteAnalysis',
+#                 'quicksight:DescribeAnalysisPermissions',
+#                 'quicksight:QueryAnalysis',
+#                 'quicksight:DescribeAnalysis',
+#                 'quicksight:UpdateAnalysis'
+#             ]
+#         },
+#     ],
 #     SourceEntity={
 #         'SourceTemplate': {
 #             'DataSetReferences': [
 #                 {
-#                     'DataSetPlaceholder': 'string',
+#                     'DataSetPlaceholder': 'ds-123',
 #                     'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
 #                 },
 #             ],
 #             'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
 #         }
-#     }
+#     },
 # )
+
 
 # pp = pprint.PrettyPrinter(depth=4)
 
@@ -116,7 +217,35 @@ response = client.create_data_set(
 
 # response = client.delete_data_source(
 #     AwsAccountId='774446988871',
-#     DataSourceId='unique-data-string-for-this-quicksight'
+#     DataSourceId='unique-data-source-id-123'
 # )
 
 # print(response)
+
+# response = client.delete_data_set(
+#     AwsAccountId='774446988871',
+#     DataSetId='unique-id-for-new-dataset'
+# )
+# print(response)
+
+
+# 'RelationalTable': {
+#     'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
+#     # 'Catalog': 'string',
+#     # 'Schema': 'string',
+#     'Name': 'new_table',
+#     'InputColumns': [
+#         {
+#             'Name': 'resource_arn',
+#             'Type': 'STRING'
+#         },
+#         {
+#             'Name': 'Environment',
+#             'Type': 'STRING'
+#         },
+#         {
+#             'Name': 'Department',
+#             'Type': 'STRING'
+#         },
+#     ]
+# },

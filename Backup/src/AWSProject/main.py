@@ -71,13 +71,13 @@ def main():
 
     list_all_tags()
     # s3_object("backupreportwithtags", csv_file, "tagcsvfile")
-    # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/csv_file.csv"
-    # upload_to_S3(path, bucket_name, csv_file_name, csv_content_type)
+    path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/csv_file.csv"
+    upload_to_S3(path, bucket_name, csv_file_name, csv_content_type)
 
     path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/file.json"
     upload_to_S3(path, bucket_name, json_file_name, json_content_type)
 
-    uri = "s3://" + bucket_name + "/" + json_file_name
+    uri = "s3://" + bucket_name + "/" + csv_file_name
     uri_prefixes = "s3://" + bucket_name + "/"
 
     manifest = create_json_manifest_file(uri, uri_prefixes, "CSV")
