@@ -69,20 +69,23 @@ class S3:
         except NameError:
             print("Error when adding permission to S3 bucket")
 
-    def upload_to_S3(self, path, bucket_name, key):
+    def upload_to_S3(self, path, bucket_name, key, content_type):
         try:
-            self.resource.meta.client.upload_file(path, bucket_name, key)
+            self.resource.meta.client.upload_file(
+                path, bucket_name, key, ExtraArgs={'ContentType': content_type})
             print("Successfully upload the file")
         except NameError:
-            print("Error uploading ")
+            print("Error uploading")
 
-    def s3_object(self, bucket_name, json_file, key):
+    def s3_object(self, bucket_name, csv_file, key):
+        print(csv_file)
         try:
             response = self.client.put_object(
-                Body=json_file,
+                Body=csv_file,
                 Bucket=bucket_name,
-                Key=key
+                Key=key,
+                ContentType="text/csv"
             )
             print("Successfully put object")
         except NameError:
-            print("Error putting object ")
+            print("Error putting object")

@@ -1,0 +1,10 @@
+resource_arn,Department,Environment,Name,aws:backup:source-resource
+arn:aws:ec2:us-east-1::image/ami-0ef1d45749545e457,marketing,staging,stagingMarketing,i-00d862f47a3a141b7:029B5683-AF29-ECDF-9FD9-7F5F2D4939C9
+arn:aws:backup:us-east-1:744878436330:recovery-point:sparcbucket1-20220707181025-34b34f45,HR,staging
+arn:aws:ec2:us-east-1::image/ami-0455cd61851765b50,marketing,staging,stagingMarketing,i-00d862f47a3a141b7:979D45BA-5A49-F8F3-1925-7674126AEE23
+arn:aws:ec2:us-east-1::image/ami-05e3e675857586e7c,sales,prod,prodSales,i-0683b2a90bffd760f:B64E01BD-7A37-20EB-5481-F9CAEF02B0CB
+arn:aws:ec2:us-east-1::image/ami-0645d89a0348fb48b,sales,prod,prodSales,i-0683b2a90bffd760f:BE2132C4-60A1-9F53-9690-557A2DAD9806
+arn:aws:backup:us-east-1:744878436330:recovery-point:sparcuserbuc-20220707191013-cdae9f08,sales,dev
+arn:aws:ec2:us-east-1::image/ami-0fcf1b410b3739984,sales,prod,prodSales,i-0683b2a90bffd760f:59A2E4E6-F8A2-8FBE-4A15-800C805CA2DC
+arn:aws:ec2:us-east-1::image/ami-08cf795d600b8b981,sales,prod,prodSales,i-0683b2a90bffd760f:4285D0F4-77C9-2A23-C6C8-089D53838813
+arn:aws:ec2:us-east-1::image/ami-0d45638f99837c844,sales,prod,prodSales,i-0683b2a90bffd760f:1E4AF1BB-B055-7EAF-930F-D2B334BDF358

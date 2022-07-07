@@ -9,7 +9,7 @@ import pprint
 
 class JsonFile:
 
-    def create_json_manifest_file(self, uri, uri_prefixes):
+    def create_json_manifest_file(self, uri, uri_prefixes, format):
         json_file = {
             "fileLocations": [
                 {
@@ -24,7 +24,7 @@ class JsonFile:
                 }
             ],
             "globalUploadSettings": {
-                "format": "JSON",
+                "format": format,
                 "delimiter": ",",
                 "textqualifier": "'",
                 "containsHeader": "true"
@@ -36,4 +36,4 @@ class JsonFile:
             outfile.write(json.dumps(manifest))
             outfile.close()
 
-        # return manifest
+        return manifest
