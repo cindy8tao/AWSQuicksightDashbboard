@@ -1,3 +1,0 @@
-hello this is a text file
-
-/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/text.txt

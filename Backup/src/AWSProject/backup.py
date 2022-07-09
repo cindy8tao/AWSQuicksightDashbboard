@@ -1,12 +1,8 @@
 from csv import excel
-import datetime
-from importlib.resources import Resource
-from urllib.request import Request
 import boto3
 import json
 import pprint
 import csv
-import pandas as pd
 
 
 class Backup:
@@ -44,7 +40,7 @@ class Backup:
             print("Error listing recovery point with tags")
 
     def write_to_csv(self, data_file):
-        csv_file = open('csv_file.csv', 'w')
+        csv_file = open('/tmp/csv_file.csv', 'w+')
         csv_writer = csv.writer(csv_file)
         count = 1
 
@@ -68,6 +64,6 @@ class Backup:
 
     def write_to_json(self, data_file):
 
-        with open('file.json', 'a') as outfile:
+        with open('/tmp/file.json', 'w+') as outfile:
             outfile.write(json.dumps(data_file))
             outfile.close()
