@@ -2,12 +2,12 @@
     "fileLocations": [
         {
             "URIs": [
-                "s3://backup-report-with-tags/csv_file_from_path.csv"
+                "s3://backup-report-based-arn-tags/csv_file_from_path.csv"
             ]
         },
         {
             "URIPrefixes": [
-                "s3://backup-report-with-tags/"
+                "s3://backup-report-based-arn-tags/"
             ]
         }
     ],

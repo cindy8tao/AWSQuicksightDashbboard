@@ -12,8 +12,7 @@ import pprint
 
 #     def create_dataset(self):
 
-region = 'us-east-1'
-client = boto3.client('quicksight', region_name=region)
+client = boto3.client('quicksight')
 
 # response = client.create_data_source(
 #     AwsAccountId='774446988871',
@@ -30,7 +29,7 @@ client = boto3.client('quicksight', region_name=region)
 #     },
 #     Permissions=[
 #         {
-#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/sparcuser1',
 #             'Actions': [
 #                 'quicksight:DescribeDataSource',
 #                 'quicksight:DescribeDataSourcePermissions',
@@ -97,79 +96,45 @@ client = boto3.client('quicksight', region_name=region)
 # )
 
 
-response = client.create_template(
-    AwsAccountId='774446988871',
-    TemplateId='unique-id-for-new-template',
-    Name='new_template',
-    Permissions=[
-        {
-            'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
-            'Actions': [
-                'quicksight:RestoreAnalysis',
-                'quicksight:UpdateAnalysisPermissions',
-                'quicksight:DeleteAnalysis',
-                'quicksight:DescribeAnalysisPermissions',
-                'quicksight:QueryAnalysis',
-                'quicksight:DescribeAnalysis',
-                'quicksight:UpdateAnalysis'
-            ]
-        },
-    ],
-    SourceEntity={
-        'SourceAnalysis': {
-            'Arn': 'string',
-            'DataSetReferences': [
-                {
-                    'DataSetPlaceholder': 'ds-123',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
-                },
-            ]
-        },
-        'SourceTemplate': {
-            'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
-        }
-    }
-)
+# response = client.create_template(
+#     AwsAccountId='774446988871',
+#     TemplateId='unique-id-for-new-template',
+#     Name='new_template',
+#     Permissions=[
+#         {
+#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+#             'Actions': [
+#                 'quicksight:RestoreAnalysis',
+#                 'quicksight:UpdateAnalysisPermissions',
+#                 'quicksight:DeleteAnalysis',
+#                 'quicksight:DescribeAnalysisPermissions',
+#                 'quicksight:QueryAnalysis',
+#                 'quicksight:DescribeAnalysis',
+#                 'quicksight:UpdateAnalysis'
+#             ]
+#         },
+#     ],
+#     SourceEntity={
+#         'SourceAnalysis': {
+#             'Arn': 'arn:aws:quicksight:us-east-1:774446988871:analysis/unique-analysis',
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'ds-123',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
+#                 },
+#             ]
+#         },
+#         # 'SourceTemplate': {
+#         #     'Arn': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871'
+#         # }
+#     }
+# )
 
 
 # response = client.create_analysis(
 #     AwsAccountId='774446988871',
 #     AnalysisId='unique-id-for-new-analysis',
 #     Name='new_analysis',
-#     # Parameters={
-#     #     'StringParameters': [
-#     #         {
-#     #             'Name': 'string',
-#     #             'Values': [
-#     #                 'string',
-#     #             ]
-#     #         },
-#     #     ],
-#     #     'IntegerParameters': [
-#     #         {
-#     #             'Name': 'string',
-#     #             'Values': [
-#     #                 123,
-#     #             ]
-#     #         },
-#     #     ],
-#     #     'DecimalParameters': [
-#     #         {
-#     #             'Name': 'string',
-#     #             'Values': [
-#     #                 123.0,
-#     #             ]
-#     #         },
-#     #     ],
-#     #     'DateTimeParameters': [
-#     #         {
-#     #             'Name': 'string',
-#     #             'Values': [
-#     #                 datetime(2015, 1, 1),
-#     #             ]
-#     #         },
-#     #     ]
-#     # },
 #     Permissions=[
 #         {
 #             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
@@ -192,10 +157,98 @@ response = client.create_template(
 #                     'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
 #                 },
 #             ],
-#             'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
+#             'Arn': 'arn:aws:quicksight:us-east-1:774446988871:template/report-template'
+#             # 'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
+#             # 'Arn': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871'
+#             # 'Arn': 'arn:aws:quicksight:us-east-1:774446988871:analysis/unique-id-for-new-analysis'
 #         }
 #     },
 # )
+
+
+response = client.create_dashboard(
+    AwsAccountId='774446988871',
+    DashboardId='unique-dahsboard-id',
+    Name='new_dashboard',
+    # Parameters={
+    #     'StringParameters': [
+    #         {
+    #             'Name': 'string',
+    #             'Values': [
+    #                 'string',
+    #             ]
+    #         },
+    #     ],
+    #     'IntegerParameters': [
+    #         {
+    #             'Name': 'string',
+    #             'Values': [
+    #                 123,
+    #             ]
+    #         },
+    #     ],
+    #     'DecimalParameters': [
+    #         {
+    #             'Name': 'string',
+    #             'Values': [
+    #                 123.0,
+    #             ]
+    #         },
+    #     ],
+    #     'DateTimeParameters': [
+    #         {
+    #             'Name': 'string',
+    #             'Values': [
+    #                 datetime(2015, 1, 1),
+    #             ]
+    #         },
+    #     ]
+    # },
+    Permissions=[
+        {
+            'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+            'Actions': [
+                'quicksight:RestoreAnalysis',
+                'quicksight:UpdateAnalysisPermissions',
+                'quicksight:DeleteAnalysis',
+                'quicksight:DescribeAnalysisPermissions',
+                'quicksight:QueryAnalysis',
+                'quicksight:DescribeAnalysis',
+                'quicksight:UpdateAnalysis'
+            ]
+        },
+    ],
+    SourceEntity={
+        'SourceTemplate': {
+            'DataSetReferences': [
+                {
+                    'DataSetPlaceholder': 'ds-123',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
+                },
+            ],
+            'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
+        }
+    },
+    #     Tags=[
+    #         {
+    #             'Key': 'string',
+    #             'Value': 'string'
+    #         },
+    #     ],
+    #     VersionDescription='string',
+    #     DashboardPublishOptions={
+    #         'AdHocFilteringOption': {
+    #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
+    #         },
+    #         'ExportToCSVOption': {
+    #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
+    #         },
+    #         'SheetControlsOption': {
+    #             'VisibilityState': 'EXPANDED' | 'COLLAPSED'
+    #         }
+    #     },
+    #     ThemeArn='string'
+)
 
 
 # pp = pprint.PrettyPrinter(depth=4)
@@ -228,6 +281,10 @@ response = client.create_template(
 # )
 # print(response)
 
+# response = client.list_templates(
+#     AwsAccountId='774446988871',
+# )
+# print(response)
 
 # 'RelationalTable': {
 #     'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
@@ -249,3 +306,11 @@ response = client.create_template(
 #         },
 #     ]
 # },
+
+# response = client.describe_user(
+#     UserName='774446988871',
+#     AwsAccountId='774446988871',
+#     Namespace='default'
+# )
+
+# print(response)
