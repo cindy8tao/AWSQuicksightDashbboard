@@ -22,6 +22,20 @@ glue_client = boto3.client('glue')
 account_id = '744878436330'
 
 
+def create_backup_plan():
+
+    backup_plan_name = '12hrs'
+    rule_name = 'RunEvery12Hours'
+    start_window_minutes = 60
+    completion_window_minutes = 120
+    schedule_expression = 'cron(0 12 * * ? *)'
+    target_backup_vault_name = 'Default'
+
+    backupClass = backup.Backup(backup_client)
+    backupClass.create_backup_plan(backup_plan_name, rule_name, start_window_minutes,
+                                   completion_window_minutes, schedule_expression, target_backup_vault_name)
+
+
 def list_all_tags():
     backupClass = backup.Backup(backup_client)
     backupClass.list_recovery_points_with_tags()
