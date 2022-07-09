@@ -14,86 +14,86 @@ import pprint
 
 client = boto3.client('quicksight')
 
-# response = client.create_data_source(
-#     AwsAccountId='774446988871',
-#     DataSourceId='unique-data-source-id-123',
-#     Name='newdatasource',
-#     Type='S3',
-#     DataSourceParameters={
-#         'S3Parameters': {
-#             'ManifestFileLocation': {
-#                 'Bucket': 'backup-report-with-tags',
-#                 'Key': 'manifest.json'
-#             }
-#         }
-#     },
-#     Permissions=[
-#         {
-#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/sparcuser1',
-#             'Actions': [
-#                 'quicksight:DescribeDataSource',
-#                 'quicksight:DescribeDataSourcePermissions',
-#                 'quicksight:UpdateDataSource',
-#                 'quicksight:UpdateDataSourcePermissions',
-#                 'quicksight:DeleteDataSource',
-#                 'quicksight:PassDataSource'
-#             ]
-#         },
-#     ]
-# )
-# print("complete")
+response = client.create_data_source(
+    AwsAccountId='774446988871',
+    DataSourceId='unique-data-source-id-123',
+    Name='newdatasource',
+    Type='S3',
+    DataSourceParameters={
+        'S3Parameters': {
+            'ManifestFileLocation': {
+                'Bucket': 'new-backup-report-based-arn-tags',
+                'Key': 'manifest.json'
+            }
+        }
+    },
+    Permissions=[
+        {
+            'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+            'Actions': [
+                'quicksight:DescribeDataSource',
+                'quicksight:DescribeDataSourcePermissions',
+                'quicksight:UpdateDataSource',
+                'quicksight:UpdateDataSourcePermissions',
+                'quicksight:DeleteDataSource',
+                'quicksight:PassDataSource'
+            ]
+        },
+    ]
+)
+print("complete")
 
-# response = client.create_data_set(
-#     AwsAccountId='774446988871',
-#     DataSetId='unique-id-for-new-dataset',
-#     Name='new_dataset',
-#     PhysicalTableMap={
-#         'string': {
-#             'S3Source': {
-#                 'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
-#                 'UploadSettings': {
-#                     'Format': 'CSV',
-#                     'StartFromRow': 1,
-#                     'ContainsHeader': True,
-#                     'TextQualifier': 'SINGLE_QUOTE',
-#                     'Delimiter': ','
-#                 },
-#                 'InputColumns': [
-#                     {
-#                         'Name': 'resource_arn',
-#                         'Type': 'STRING'
-#                     },
-#                     {
-#                         'Name': 'Environment',
-#                         'Type': 'STRING'
-#                     },
-#                     {
-#                         'Name': 'Department',
-#                         'Type': 'STRING'
-#                     },
-#                 ]
-#             }
-#         }
-#     },
-#     ImportMode='SPICE',
-#     Permissions=[
-#         {
-#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
-#             'Actions': [
-#                 'quicksight:PassDataSet',
-#                 'quicksight:DescribeIngestion',
-#                 'quicksight:CreateIngestion',
-#                 'quicksight:UpdateDataSet',
-#                 'quicksight:DeleteDataSet',
-#                 'quicksight:DescribeDataSet',
-#                 'quicksight:CancelIngestion',
-#                 'quicksight:DescribeDataSetPermissions',
-#                 'quicksight:ListIngestions',
-#                 'quicksight:UpdateDataSetPermissions'
-#             ]
-#         },
-#     ],
-# )
+response = client.create_data_set(
+    AwsAccountId='774446988871',
+    DataSetId='unique-id-for-new-dataset',
+    Name='new_dataset',
+    PhysicalTableMap={
+        'string': {
+            'S3Source': {
+                'DataSourceArn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123',
+                'UploadSettings': {
+                    'Format': 'CSV',
+                    'StartFromRow': 1,
+                    'ContainsHeader': True,
+                    'TextQualifier': 'SINGLE_QUOTE',
+                    'Delimiter': ','
+                },
+                'InputColumns': [
+                    {
+                        'Name': 'resource_arn',
+                        'Type': 'STRING'
+                    },
+                    {
+                        'Name': 'Environment',
+                        'Type': 'STRING'
+                    },
+                    {
+                        'Name': 'Department',
+                        'Type': 'STRING'
+                    },
+                ]
+            }
+        }
+    },
+    ImportMode='SPICE',
+    Permissions=[
+        {
+            'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+            'Actions': [
+                'quicksight:PassDataSet',
+                'quicksight:DescribeIngestion',
+                'quicksight:CreateIngestion',
+                'quicksight:UpdateDataSet',
+                'quicksight:DeleteDataSet',
+                'quicksight:DescribeDataSet',
+                'quicksight:CancelIngestion',
+                'quicksight:DescribeDataSetPermissions',
+                'quicksight:ListIngestions',
+                'quicksight:UpdateDataSetPermissions'
+            ]
+        },
+    ],
+)
 
 
 # response = client.create_template(
@@ -166,89 +166,89 @@ client = boto3.client('quicksight')
 # )
 
 
-response = client.create_dashboard(
-    AwsAccountId='774446988871',
-    DashboardId='unique-dahsboard-id',
-    Name='new_dashboard',
-    # Parameters={
-    #     'StringParameters': [
-    #         {
-    #             'Name': 'string',
-    #             'Values': [
-    #                 'string',
-    #             ]
-    #         },
-    #     ],
-    #     'IntegerParameters': [
-    #         {
-    #             'Name': 'string',
-    #             'Values': [
-    #                 123,
-    #             ]
-    #         },
-    #     ],
-    #     'DecimalParameters': [
-    #         {
-    #             'Name': 'string',
-    #             'Values': [
-    #                 123.0,
-    #             ]
-    #         },
-    #     ],
-    #     'DateTimeParameters': [
-    #         {
-    #             'Name': 'string',
-    #             'Values': [
-    #                 datetime(2015, 1, 1),
-    #             ]
-    #         },
-    #     ]
-    # },
-    Permissions=[
-        {
-            'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
-            'Actions': [
-                'quicksight:RestoreAnalysis',
-                'quicksight:UpdateAnalysisPermissions',
-                'quicksight:DeleteAnalysis',
-                'quicksight:DescribeAnalysisPermissions',
-                'quicksight:QueryAnalysis',
-                'quicksight:DescribeAnalysis',
-                'quicksight:UpdateAnalysis'
-            ]
-        },
-    ],
-    SourceEntity={
-        'SourceTemplate': {
-            'DataSetReferences': [
-                {
-                    'DataSetPlaceholder': 'ds-123',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
-                },
-            ],
-            'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
-        }
-    },
-    #     Tags=[
-    #         {
-    #             'Key': 'string',
-    #             'Value': 'string'
-    #         },
-    #     ],
-    #     VersionDescription='string',
-    #     DashboardPublishOptions={
-    #         'AdHocFilteringOption': {
-    #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
-    #         },
-    #         'ExportToCSVOption': {
-    #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
-    #         },
-    #         'SheetControlsOption': {
-    #             'VisibilityState': 'EXPANDED' | 'COLLAPSED'
-    #         }
-    #     },
-    #     ThemeArn='string'
-)
+# response = client.create_dashboard(
+#     AwsAccountId='774446988871',
+#     DashboardId='unique-dahsboard-id',
+#     Name='new_dashboard',
+#     # Parameters={
+#     #     'StringParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 'string',
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'IntegerParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 123,
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'DecimalParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 123.0,
+#     #             ]
+#     #         },
+#     #     ],
+#     #     'DateTimeParameters': [
+#     #         {
+#     #             'Name': 'string',
+#     #             'Values': [
+#     #                 datetime(2015, 1, 1),
+#     #             ]
+#     #         },
+#     #     ]
+#     # },
+#     Permissions=[
+#         {
+#             'Principal': 'arn:aws:quicksight:us-east-1:774446988871:user/default/774446988871',
+#             'Actions': [
+#                 'quicksight:RestoreAnalysis',
+#                 'quicksight:UpdateAnalysisPermissions',
+#                 'quicksight:DeleteAnalysis',
+#                 'quicksight:DescribeAnalysisPermissions',
+#                 'quicksight:QueryAnalysis',
+#                 'quicksight:DescribeAnalysis',
+#                 'quicksight:UpdateAnalysis'
+#             ]
+#         },
+#     ],
+#     SourceEntity={
+#         'SourceTemplate': {
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'ds-123',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:774446988871:dataset/unique-id-for-new-dataset'
+#                 },
+#             ],
+#             'Arn': 'arn:aws:quicksight:us-east-1:774446988871:datasource/unique-data-source-id-123'
+#         }
+#     },
+#     #     Tags=[
+#     #         {
+#     #             'Key': 'string',
+#     #             'Value': 'string'
+#     #         },
+#     #     ],
+#     #     VersionDescription='string',
+#     #     DashboardPublishOptions={
+#     #         'AdHocFilteringOption': {
+#     #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
+#     #         },
+#     #         'ExportToCSVOption': {
+#     #             'AvailabilityStatus': 'ENABLED' | 'DISABLED'
+#     #         },
+#     #         'SheetControlsOption': {
+#     #             'VisibilityState': 'EXPANDED' | 'COLLAPSED'
+#     #         }
+#     #     },
+#     #     ThemeArn='string'
+# )
 
 
 # pp = pprint.PrettyPrinter(depth=4)

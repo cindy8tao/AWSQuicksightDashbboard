@@ -20,8 +20,8 @@ class Backup:
             response = self.client.list_recovery_points_by_backup_vault(
                 BackupVaultName='Default',
             )
-            # size = len(response['RecoveryPoints'])
-            size = 10
+            size = len(response['RecoveryPoints'])
+            # size = 10
 
             data_file = {}
 
@@ -46,23 +46,23 @@ class Backup:
     def write_to_csv(self, data_file):
         csv_file = open('csv_file.csv', 'w')
         csv_writer = csv.writer(csv_file)
-        count = 0
+        count = 1
 
-        for data in data_file:
-            if count == 0:
-                header = ["ResourceArn"]
-                for key in data_file[data][0].keys():
-                    header.append(key)
-                header.append("ResourceType")
-                csv_writer.writerow(header)
-                count += 1
+        header = ["ResourceArn", "Department", "Environment", "ResourceType"]
+        csv_writer.writerow(header)
+
+        for key, value, in data_file.items():
+            row = [key]
+            if len(value[0]) == 0:
+                row.append(" ")
+                row.append(" ")
             else:
-                line = [data]
-                for value in data_file[data][0].values():
-                    line.append(value)
-                line.append(data_file[data][1])
-                csv_writer.writerow(line)
-                count += 1
+                for v in value[0].values():
+                    row.append(v)
+            row.append(value[1])
+
+            csv_writer.writerow(row)
+            count += 1
 
         csv_file.close()
 

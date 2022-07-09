@@ -42,7 +42,6 @@ def create_s3_bucket(bucket_name):
     s3Class = s3.S3(account_id, s3_client, s3_resource)
     s3Class.create_bucket(bucket_name)
     s3Class.bucket_version(bucket_name)
-    s3Class.put_bucket_policy(bucket_name)
 
 
 def create_json_manifest_file(uri, uri_prefixes, format):
@@ -58,7 +57,7 @@ def main():
 
     print("Welcome to create your Quicksight Backup Dashboard ")
 
-    bucket_name = "backup-report-based-arn-tags"
+    bucket_name = "new-backup-report-based-arn-tags"
     json_file_name = "json_file_from_path.json"
     json_content_type = "application/json"
     csv_file_name = "csv_file_from_path.csv"
@@ -69,30 +68,30 @@ def main():
     try:
         create_s3_bucket(bucket_name)
         print("Created bucket")
-    except:
-        print("Bucket already exist")
+    except NameError:
+        print("Bucket name already exist")
         pass
 
     list_all_tags()
-    # # s3_object("backupreportwithtags", csv_file, "tagcsvfile")
-    # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/csv_file.csv"
-    # upload_to_S3(path, bucket_name, csv_file_name, csv_content_type)
+    # s3_object("backupreportwithtags", csv_file, "tagcsvfile")
+    path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/csv_file.csv"
+    upload_to_S3(path, bucket_name, csv_file_name, csv_content_type)
 
-    # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/file.json"
-    # upload_to_S3(path, bucket_name, json_file_name, json_content_type)
+    path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/file.json"
+    upload_to_S3(path, bucket_name, json_file_name, json_content_type)
 
-    # uri = "s3://" + bucket_name + "/" + csv_file_name
-    # uri_prefixes = "s3://" + bucket_name + "/"
+    uri = "s3://" + bucket_name + "/" + csv_file_name
+    uri_prefixes = "s3://" + bucket_name + "/"
 
-    # manifest = create_json_manifest_file(uri, uri_prefixes, "CSV")
+    manifest = create_json_manifest_file(uri, uri_prefixes, "CSV")
+    # s3_object(bucket_name, manifest, "manifest_file")
+    path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/manifest.json"
+    upload_to_S3(path, bucket_name, "manifest.json", json_content_type)
+
+    # manifest = create_json_manifest_file(uri, uri_prefixes, "JSON")
     # # s3_object(bucket_name, manifest, "manifest_file")
     # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/manifest.json"
     # upload_to_S3(path, bucket_name, "manifest.json", json_content_type)
-
-    # # manifest = create_json_manifest_file(uri, uri_prefixes, "JSON")
-    # # # s3_object(bucket_name, manifest, "manifest_file")
-    # # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/manifest.json"
-    # # upload_to_S3(path, bucket_name, "manifest.json", json_content_type)
 
 
 if __name__ == "__main__":
