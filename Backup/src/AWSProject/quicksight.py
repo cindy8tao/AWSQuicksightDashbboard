@@ -143,8 +143,49 @@ class Quicksight:
             time.sleep(5)
             self.create_new_dataset()
 
-    def create_template(self):
+    def update_dateset(self):
 
+        response = self.client.update_data_set(
+            AwsAccountId=self.account_id,
+            DataSetId='unique-id-for-new-dataset'+self.account_id,
+            Name='dataset'+self.account_id,
+            PhysicalTableMap={
+                'string': {
+                    'S3Source': {
+                        'DataSourceArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':datasource/'+'unique-data-source-id-'+self.account_id,
+                        'UploadSettings': {
+                            'Format': 'CSV',
+                            'StartFromRow': 1,
+                            'ContainsHeader': True,
+                            'TextQualifier': 'SINGLE_QUOTE',
+                            'Delimiter': ','
+                        },
+                        'InputColumns': [
+                            {
+                                'Name': 'ResourceArn',
+                                'Type': 'STRING'
+                            },
+                            {
+                                'Name': 'Environment',
+                                'Type': 'STRING'
+                            },
+                            {
+                                'Name': 'Department',
+                                'Type': 'STRING'
+                            },
+                            {
+                                'Name': 'ResourceType',
+                                'Type': 'STRING'
+                            },
+                        ]
+                    }
+                }
+            },
+            ImportMode='SPICE',
+        )
+        print("Updated dataset")
+
+    def create_template(self):
         try:
             response = self.client.create_template(
                 AwsAccountId=self.account_id,
@@ -182,9 +223,28 @@ class Quicksight:
                     }
                 }
             )
+            print("Wait 5 seconds for the template to finish creation ... ")
+            time.sleep(5)
             print("Successfully created template")
-        except NameError:
-            print("Error when creating template")
+        except:
+            response = self.client.update_template(
+                AwsAccountId=self.account_id,
+                TemplateId='unique-id-for-new-template'+self.account_id,
+                SourceEntity={
+                    'SourceAnalysis': {
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
+                        'DataSetReferences': [
+                            {
+                                'DataSetPlaceholder': 'ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
+                            },
+                        ]
+                    }
+                }
+            )
+            print("Wait 5 seconds for the template to updating ... ")
+            time.sleep(5)
+            print("Successfully updated template")
 
     def create_analysis(self):
 
@@ -212,7 +272,7 @@ class Quicksight:
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
-                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
                         ],
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id,
@@ -220,8 +280,24 @@ class Quicksight:
                 }
             )
             print("Successfully created analysis")
-        except NameError:
-            print("Error when creating analysis")
+        except:
+            response = self.client.update_analysis(
+                AwsAccountId=self.account_id,
+                AnalysisId='unique-id-for-new-analysis'+self.account_id,
+                Name='analysis'+self.account_id,
+                SourceEntity={
+                    'SourceTemplate': {
+                        'DataSetReferences': [
+                            {
+                                'DataSetPlaceholder': 'ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
+                            },
+                        ],
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id,
+                    }
+                }
+            )
+            print("Successfully updated analysis")
 
     def create_dashboard(self):
 
@@ -250,16 +326,32 @@ class Quicksight:
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
-                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
                         ],
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id
                     }
                 }
             )
             print("Successfully created dashboard")
-        except NameError:
-            print("Error when creating dashboard")
+        except:
+            response = self.client.update_dashboard(
+                AwsAccountId=self.account_id,
+                DashboardId='unique-dashboard-id'+self.account_id,
+                Name='dashboard'+self.account_id,
+                SourceEntity={
+                    'SourceTemplate': {
+                        'DataSetReferences': [
+                            {
+                                'DataSetPlaceholder': 'ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
+                            },
+                        ],
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id
+                    }
+                },
+            )
+            print("Successfully updated dashboard")
 
     def delete_datasource(self, datasource):
 
@@ -377,3 +469,14 @@ class Quicksight:
     #     TemplateId='unique-id-for-new-template774446988871'
     # )
     # print("Successfully when deleting template")
+
+    # client = boto3.client('quicksight')
+    # response = client.list_data_sources(
+    #     AwsAccountId='774446988871'
+    # )
+    # print(response)
+
+    # response = client.list_data_sets(
+    #     AwsAccountId='774446988871',
+    # )
+    # print(response)

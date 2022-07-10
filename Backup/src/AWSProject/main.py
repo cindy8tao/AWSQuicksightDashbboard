@@ -203,9 +203,9 @@ def main():
     ####################################################
     create_datasource(account_id)
     create_dataset(account_id)
-    # create_template(account_id)
-    # create_analysis(account_id)
-    # create_dashboard(account_id)
+    create_template(account_id)
+    create_analysis(account_id)
+    create_dashboard(account_id)
 
 
 if __name__ == "__main__":
