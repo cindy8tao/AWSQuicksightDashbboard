@@ -86,11 +86,11 @@ class S3:
                         "s3:GetBucketAcl",
                         "s3:GetBucketPolicy"
                     ],
-                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-774446988871",
+                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id,
                     "Condition": {
                         "StringEquals": {
-                            "aws:SourceArn": "arn:aws:cur:us-east-1:774446988871:definition/*",
-                            "aws:SourceAccount": "774446988871"
+                            "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
+                            "aws:SourceAccount": self.account_id
                         }
                     }
                 },
@@ -101,11 +101,11 @@ class S3:
                         "Service": "billingreports.amazonaws.com"
                     },
                     "Action": "s3:PutObject",
-                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-774446988871/*",
+                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id+"/*",
                     "Condition": {
                         "StringEquals": {
-                            "aws:SourceArn": "arn:aws:cur:us-east-1:774446988871:definition/*",
-                            "aws:SourceAccount": "774446988871"
+                            "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
+                            "aws:SourceAccount": self.account_id
                         }
                     }
                 }

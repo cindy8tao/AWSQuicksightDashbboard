@@ -132,36 +132,34 @@ def create_cost_report(bucket_name):
     costreportClass.create_cost_report(bucket_name)
 
 
-# def lambda_handler(event, context):
-def main():
+def lambda_handler(event, context):
 
     print("Welcome to create your Quicksight Backup Dashboard ")
-    # account_id = context.invoked_function_arn.split(":")[4]
-    account_id = '774446988871'
+    account_id = context.invoked_function_arn.split(":")[4]
 
     #####################################################
     # Create the following backup plans                 #
     #####################################################
 
-    # hours = 1
-    # environment = 'prod'
-    # department = 'sales'
+    hours = 1
+    environment = 'prod'
+    department = 'sales'
 
-    # create_backup_plan(account_id, 60, 120,
-    #                    'Default', hours, environment, department)
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
 
-    # hours = 3
-    # environment = 'staging'
-    # department = 'HR'
+    hours = 3
+    environment = 'staging'
+    department = 'HR'
 
-    # create_backup_plan(account_id, 60, 120,
-    #                    'Default', hours, environment, department)
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
 
-    # hours = 6
-    # environment = 'dev'
-    # department = 'marketing'
-    # create_backup_plan(account_id, 60, 120,
-    #                    'Default', hours, environment, department)
+    hours = 6
+    environment = 'dev'
+    department = 'marketing'
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
 
     #####################################################
     bucket_name = "new-backup-report-based-arn-tags-"+account_id
@@ -225,7 +223,3 @@ def main():
     create_template(account_id)
     create_analysis(account_id)
     create_dashboard(account_id)
-
-
-if __name__ == "__main__":
-    main()
