@@ -172,11 +172,11 @@ class Quicksight:
                 ],
                 SourceEntity={
                     'SourceAnalysis': {
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/d1ca679c-4db5-41f8-b992-a6bd0353b6b3',
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
-                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'
                             },
                         ]
                     }
@@ -215,9 +215,10 @@ class Quicksight:
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'
                             },
                         ],
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id,
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'
                     }
-                }
+                },
+                ThemeArn='string',
             )
             print("Successfully created analysis")
         except NameError:
@@ -355,10 +356,9 @@ class Quicksight:
 
     # print(response)
 
-    # client = boto3.client('quicksight')
     # response = client.describe_analysis(
-    #     AwsAccountId='774446988871',
-    #     AnalysisId='3f55df65-8c60-4a5c-bc24-926502089523'
+    #     AwsAccountId=self.account_id,
+    #     AnalysisId='d1ca679c-4db5-41f8-b992-a6bd0353b6b3'
     # )
 
     # print(response)
@@ -369,11 +369,3 @@ class Quicksight:
     # )
 
     # print(response)
-
-    # client = boto3.client('quicksight')
-
-    # response = client.delete_template(
-    #     AwsAccountId='774446988871',
-    #     TemplateId='unique-id-for-new-template774446988871'
-    # )
-    # print("Successfully when deleting template")

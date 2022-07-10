@@ -140,12 +140,12 @@ def create_cost_report(bucket_name):
     costreportClass.create_cost_report(bucket_name)
 
 
-def main():
+def lambda_handler(event, context):
 
     print("Welcome to create your Quicksight Backup Dashboard ")
 
-    account_id = '774446988871'
-    bucket_name = "new-backup-report-based-arn-tags-"+account_id
+    account_id = context.invoked_function_arn.split(":")[4]
+    bucket_name = "new-backup-report-based-arn-tags"+account_id
     cost_bucket_name = "cost-report-for-quicksight-"+account_id
     json_file_name = "json_file_from_path.json"
     json_content_type = "application/json"
@@ -203,10 +203,3 @@ def main():
     ####################################################
     create_datasource(account_id)
     create_dataset(account_id)
-    # create_template(account_id)
-    # create_analysis(account_id)
-    # create_dashboard(account_id)
-
-
-if __name__ == "__main__":
-    main()
