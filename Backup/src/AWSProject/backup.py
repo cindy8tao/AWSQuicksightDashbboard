@@ -7,39 +7,66 @@ import csv
 
 class Backup:
 
-    def __init__(self, client):
+    def __init__(self, account_id, client):
+        self.account_id = account_id
         self.client = client
 
-    def create_backup_plan(self, backup_plan_name, rule_name, start_window_minutes, completion_window_minutes, schedule_expression, target_backup_vault_name):
+    def assign_backup_resources(self, backupPlanId, environment, department):
+        try:
+            response = self.client.create_backup_selection(
+                BackupPlanId=backupPlanId,
+                BackupSelection={
+                    'SelectionName': environment + 'backup',
+                    'IamRoleArn': 'arn:aws:iam::'+self.account_id+':role/aws-service-role/backup.amazonaws.com/AWSServiceRoleForBackup',
+                    'Resources': [
+                        '*',
+                    ],
+                    'ListOfTags': [
+                        {
+                            'ConditionType': 'STRINGEQUALS',
+                            'ConditionKey': 'Environment',
+                            'ConditionValue': environment
+                        },
+                        {
+                            'ConditionType': 'STRINGEQUALS',
+                            'ConditionKey': 'Department',
+                            'ConditionValue': department
+                        },
+                    ]
+                },
+            )
+            print("Successfully assigned backup resources")
+        except NameError:
+            print("Error when assigning backup resources")
+
+    def create_backup_plan(self, start_window_minutes, completion_window_minutes, target_backup_vault_name, hrs, environment, department):
 
         try:
             response = self.client.create_backup_plan(
                 BackupPlan={
-                    'BackupPlanName': backup_plan_name,
+                    'BackupPlanName': str(hrs) + 'hours-'+self.account_id,
                     'Rules': [
                         {
-                            'RuleName': rule_name,
+                            'RuleName': 'every' + str(hrs) + 'hours',
                             'TargetBackupVaultName': target_backup_vault_name,
-                            'ScheduleExpression': schedule_expression,
+                            'ScheduleExpression': 'cron(0 '+str(hrs) + ' * * ? *)',
                             'StartWindowMinutes': start_window_minutes,
                             'CompletionWindowMinutes': completion_window_minutes,
+                            'RecoveryPointTags': {
+                                'Environment': environment,
+                                'Department': department
+                            }
                         }
                     ]
-                }
+                },
+                BackupPlanTags={
+                    'Environment': environment,
+                    'Department': department
+                },
             )
-            BACKUP_PLAN_ID = response['BackupPlanId']
             print("Successfully created backup plan")
         except NameError:
             print("Error has occur during creation")
-
-        # Delete the backup plan just created
-        # try:
-        #     response = client.delete_backup_plan(
-        #         BackupPlanId=BACKUP_PLAN_ID
-        #     )
-        #     print("Successfully deleted plan")
-        # except NameError:
-        #     print("Error has occur during deletion")
 
     def list_recovery_points_with_tags(self):
 

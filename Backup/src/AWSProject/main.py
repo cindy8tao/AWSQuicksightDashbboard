@@ -19,22 +19,14 @@ quicksight_client = boto3.client('quicksight')
 costreport_client = boto3.client('cur')
 
 
-def create_backup_plan():
-
-    backup_plan_name = '12hrs'
-    rule_name = 'RunEvery12Hours'
-    start_window_minutes = 60
-    completion_window_minutes = 120
-    schedule_expression = 'cron(0 12 * * ? *)'
-    target_backup_vault_name = 'Default'
-
-    backupClass = backup.Backup(backup_client)
-    backupClass.create_backup_plan(backup_plan_name, rule_name, start_window_minutes,
-                                   completion_window_minutes, schedule_expression, target_backup_vault_name)
+def create_backup_plan(account_id, start_window_minutes, completion_window_minutes, target_backup_vault_name, hrs, environment, department):
+    backupClass = backup.Backup(account_id, backup_client)
+    backupClass.create_backup_plan(start_window_minutes, completion_window_minutes,
+                                   target_backup_vault_name, hrs, environment, department)
 
 
-def list_all_tags():
-    backupClass = backup.Backup(backup_client)
+def list_all_tags(account_id):
+    backupClass = backup.Backup(account_id, backup_client)
     backupClass.list_recovery_points_with_tags()
 
 
@@ -140,11 +132,38 @@ def create_cost_report(bucket_name):
     costreportClass.create_cost_report(bucket_name)
 
 
+# def lambda_handler(event, context):
 def main():
 
     print("Welcome to create your Quicksight Backup Dashboard ")
-
+    # account_id = context.invoked_function_arn.split(":")[4]
     account_id = '774446988871'
+
+    #####################################################
+    # Create the following backup plans                 #
+    #####################################################
+
+    hours = 1
+    environment = 'prod'
+    department = 'sales'
+
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
+
+    hours = 3
+    environment = 'staging'
+    department = 'HR'
+
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
+
+    hours = 6
+    environment = 'dev'
+    department = 'marketing'
+    create_backup_plan(account_id, 60, 120,
+                       'Default', hours, environment, department)
+
+    #####################################################
     bucket_name = "new-backup-report-based-arn-tags-"+account_id
     cost_bucket_name = "cost-report-for-quicksight-"+account_id
     json_file_name = "json_file_from_path.json"
@@ -163,7 +182,7 @@ def main():
         print("Bucket name already exist")
         pass
 
-    list_all_tags()
+    list_all_tags(account_id)
 
     path = "/tmp/csv_file.csv"
     upload_to_S3(account_id, path, bucket_name,
