@@ -1,7 +1,8 @@
-# Import date class from datetime module
-from datetime import date
+import resource
+import boto3
 
 
-# Returns the current local date
-today = date.today()
-print("Today date is: ", today)
+s3 = boto3.resource('s3')
+for bucket in s3.buckets.all():
+    print("List of Bucket:")
+    print(bucket.name)

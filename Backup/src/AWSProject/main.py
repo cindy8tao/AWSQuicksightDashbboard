@@ -2,6 +2,8 @@ import boto3
 import backup
 import s3
 import jsonfile
+import quicksight
+from datetime import datetime
 import ec2
 import rds
 import glue
@@ -17,9 +19,9 @@ backup_client = boto3.client('backup')
 ec2_resource = boto3.resource('ec2')
 rds_client = boto3.client('rds')
 glue_client = boto3.client('glue')
+quicksight_client = boto3.client('quicksight')
 
-# account_id = input("Please enter your AWS account_id: ")
-account_id = '744878436330'
+account_id = '774446988871'
 
 
 def create_backup_plan():
@@ -62,6 +64,72 @@ def create_json_manifest_file(uri, uri_prefixes, format):
     jsonClass.create_json_manifest_file(uri, uri_prefixes, format)
 
 
+def create_datasource():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_datasource()
+
+
+def update_datasource():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.update_datasource()
+
+
+def create_dataset():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_dataset()
+
+
+def create_template():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_template()
+
+
+def create_analysis():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_analysis()
+
+
+def create_dashboard():
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_dashboard()
+
+
+def delete_datasource(datasource):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.delete_datasource(datasource)
+
+
+def delete_dataset(dataset):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.delete_dataset(dataset)
+
+
+def delete_template(template):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.delete_template(template)
+
+
+def delete_analysis(analysis):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.delete_analysis(analysis)
+
+
+def delete_dashboard(dashboard):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.delete_dashboard(dashboard)
+
+
 def main():
 
     #####################################################
@@ -76,33 +144,35 @@ def main():
     csv_file_name = "csv_file_from_path.csv"
     csv_content_type = "text/csv"
 
-    bucket = s3_resource.Bucket(bucket_name)
+    s3_resource.Bucket(bucket_name)
 
     try:
         create_s3_bucket(bucket_name)
         print("Created bucket")
-    except NameError:
+    except:
         print("Bucket name already exist")
         pass
 
     list_all_tags()
+
     path = "/tmp/csv_file.csv"
     upload_to_S3(path, bucket_name, csv_file_name, csv_content_type)
 
     path = "/tmp/file.json"
     upload_to_S3(path, bucket_name, json_file_name, json_content_type)
 
-    uri = "s3://" + bucket_name + "/" + csv_file_name
-    uri_prefixes = "s3://" + bucket_name + "/"
+    now = datetime.now()
+    folder_name = now.strftime("%m/%d/%Y")
 
-    manifest = create_json_manifest_file(uri, uri_prefixes, "CSV")
+    uri = "s3://" + bucket_name + "/" + folder_name + "/" + csv_file_name
+    uri_prefixes = "s3://" + bucket_name + "/" + folder_name + "/"
+
+    create_json_manifest_file(uri, uri_prefixes, "CSV")
     path = "/tmp/manifest.json"
     upload_to_S3(path, bucket_name, "manifest.json", json_content_type)
 
-    # manifest = create_json_manifest_file(uri, uri_prefixes, "JSON")
-    # # s3_object(bucket_name, manifest, "manifest_file")
-    # path = "/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/manifest.json"
-    # upload_to_S3(path, bucket_name, "manifest.json", json_content_type)
+    create_datasource()
+    create_dataset()
 
 
 if __name__ == "__main__":
