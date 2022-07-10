@@ -1,5 +1,6 @@
 import boto3
 import json
+from datetime import datetime
 
 
 class S3:
@@ -70,9 +71,13 @@ class S3:
             print("Error when adding permission to S3 bucket")
 
     def upload_to_S3(self, path, bucket_name, key, content_type):
+
+        now = datetime.now()
+        folder_name = now.strftime("%m/%d/%Y")
+
         try:
             self.resource.meta.client.upload_file(
-                path, bucket_name, key, ExtraArgs={'ContentType': content_type})
+                path, bucket_name, Key=(folder_name + '/' + key), ExtraArgs={'ContentType': content_type})
             print("Successfully upload the file")
         except NameError:
             print("Error uploading")
