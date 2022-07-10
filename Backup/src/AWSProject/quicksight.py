@@ -137,8 +137,8 @@ class Quicksight:
             print("Created new dataset complete")
         except:
             self.delete_dataset('unique-id-for-new-dataset'+self.account_id)
-            print("Wait 10 seconds for the dataset to delete ... ")
-            time.sleep(10)
+            print("Wait 5 seconds for the dataset to delete ... ")
+            time.sleep(5)
             self.create_new_dataset()
 
     def create_template(self):
@@ -277,7 +277,7 @@ class Quicksight:
                 AwsAccountId=self.account_id,
                 DataSetId=dataset
             )
-            print("Successfully when deleting dataset")
+            print("Deleting dataset ... ")
         except NameError:
             print("Error when deleting dataset")
 

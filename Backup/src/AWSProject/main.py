@@ -132,10 +132,6 @@ def delete_dashboard(dashboard):
 
 def main():
 
-    #####################################################
-    # Ask user for inputs                               #
-    #####################################################
-
     print("Welcome to create your Quicksight Backup Dashboard ")
 
     bucket_name = "new-backup-report-based-arn-tags"
