@@ -215,6 +215,7 @@ class Quicksight:
                     'SourceAnalysis': {
                         # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/unique-id-for-new-analysis774446988871',
+                        # 'Arn': 'arn:aws:quicksight:us-east-1:744878436330:analysis/BoS-For-AWSBackup-Analysis-db697840',
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
@@ -235,6 +236,7 @@ class Quicksight:
                     'SourceAnalysis': {
                         # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/unique-id-for-new-analysis774446988871',
+                        # 'Arn': 'arn:aws:quicksight:us-east-1:744878436330:analysis/BoS-For-AWSBackup-Analysis-db697840',
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',

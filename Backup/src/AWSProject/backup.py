@@ -64,6 +64,9 @@ class Backup:
                     'Department': department
                 },
             )
+
+            self.assign_backup_resources(
+                response['BackupPlanId'], environment, department)
             print("Successfully created backup plan")
         except NameError:
             print("Error has occur during creation")
