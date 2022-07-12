@@ -256,7 +256,7 @@ def main():
     create_datasource(account_id, data_source_id, name, bucket, key)
 
     create_dataset(account_id)
-    # create_cost_dataset(account_id)
+    create_cost_dataset(account_id)
     create_template(account_id)
     create_analysis(account_id)
     create_dashboard(account_id)

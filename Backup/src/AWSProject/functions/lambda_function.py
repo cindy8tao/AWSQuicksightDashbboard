@@ -5,6 +5,8 @@ import jsonfile
 import quicksight
 from datetime import datetime
 import costreport
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 #####################################################
 # Create the required clients and resources         #
@@ -61,22 +63,28 @@ def create_json_manifest_file(uri, uri_prefixes, format):
     jsonClass.create_json_manifest_file(uri, uri_prefixes, format)
 
 
-def create_datasource(account_id):
+def create_datasource(account_id, data_source_id, name, bucket, key):
     quicksightClass = quicksight.Quicksight(
         account_id, quicksight_client, account_id)
-    quicksightClass.create_datasource()
+    quicksightClass.create_datasource(data_source_id, name, bucket, key)
 
 
-def update_datasource(account_id):
+def update_datasource(account_id, data_source_id, name, bucket, key):
     quicksightClass = quicksight.Quicksight(
         account_id, quicksight_client, account_id)
-    quicksightClass.update_datasource()
+    quicksightClass.update_datasource(data_source_id, name, bucket, key)
 
 
 def create_dataset(account_id):
     quicksightClass = quicksight.Quicksight(
         account_id, quicksight_client, account_id)
     quicksightClass.create_dataset()
+
+
+def create_cost_dataset(account_id):
+    quicksightClass = quicksight.Quicksight(
+        account_id, quicksight_client, account_id)
+    quicksightClass.create_cost_dataset()
 
 
 def create_template(account_id):
@@ -141,25 +149,25 @@ def lambda_handler(event, context):
     # Create the following backup plans                 #
     #####################################################
 
-    hours = 1
-    environment = 'prod'
-    department = 'sales'
+    # hours = 1
+    # environment = 'prod'
+    # department = 'sales'
 
-    create_backup_plan(account_id, 60, 120,
-                       'Default', hours, environment, department)
+    # create_backup_plan(account_id, 60, 120,
+    #                    'Default', hours, environment, department)
 
-    hours = 3
-    environment = 'staging'
-    department = 'HR'
+    # hours = 3
+    # environment = 'staging'
+    # department = 'HR'
 
-    create_backup_plan(account_id, 60, 120,
-                       'Default', hours, environment, department)
+    # create_backup_plan(account_id, 60, 120,
+    #                    'Default', hours, environment, department)
 
-    hours = 6
-    environment = 'dev'
-    department = 'marketing'
-    create_backup_plan(account_id, 60, 120,
-                       'Default', hours, environment, department)
+    # hours = 6
+    # environment = 'dev'
+    # department = 'marketing'
+    # create_backup_plan(account_id, 60, 120,
+    #                    'Default', hours, environment, department)
 
     #####################################################
     bucket_name = "new-backup-report-based-arn-tags-"+account_id
@@ -218,8 +226,35 @@ def lambda_handler(event, context):
     ####################################################
     # Quicksight                                       #
     ####################################################
-    create_datasource(account_id)
+
+    # Backup report datasource
+    now = datetime.now()
+    folder_name = now.strftime("%m/%d/%Y")
+    data_source_id = 'unique-data-source-id-' + account_id
+    name = 'datasource' + account_id
+    bucket = 'new-backup-report-based-arn-tags-' + account_id
+    key = folder_name + '/manifest.json'
+
+    create_datasource(account_id, data_source_id, name, bucket, key)
+
+    # Cost report datasource
+    now = datetime.now() - relativedelta(days=1)
+    future = now + relativedelta(months=1)
+    folder_name = now.strftime("%m/%d/%Y")
+
+    current_month = now.strftime("%Y%m01")
+    next_month = future.strftime("%Y%m01")
+
+    data_source_id = 'unique-cost-data-source-id-' + account_id
+    name = 'cost-datasource' + account_id
+    bucket = 'cost-report-for-quicksight-' + account_id
+    key = folder_name + '/costreport/QuickSight/costreport-' + \
+        current_month + '-' + next_month + '-QuickSightManifest.json'
+
+    create_datasource(account_id, data_source_id, name, bucket, key)
+
     create_dataset(account_id)
+    create_cost_dataset(account_id)
     create_template(account_id)
     create_analysis(account_id)
     create_dashboard(account_id)

@@ -4,6 +4,8 @@ import boto3
 import json
 import pprint
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import pprint
 
 
 class Quicksight:
@@ -13,21 +15,18 @@ class Quicksight:
         self.client = client
         self.user = user
 
-    def create_new_datasource(self):
-        now = datetime.now()
-        folder_name = now.strftime("%m/%d/%Y")
+    def create_new_datasource(self, data_source_id, name, bucket, key):
 
-        # try:
         response = self.client.create_data_source(
             AwsAccountId=self.account_id,
-            DataSourceId='unique-data-source-id-'+self.account_id,
-            Name='datasource'+self.account_id,
+            DataSourceId=data_source_id,
+            Name=name,
             Type='S3',
             DataSourceParameters={
                 'S3Parameters': {
                     'ManifestFileLocation': {
-                        'Bucket': 'new-backup-report-based-arn-tags-'+self.account_id,
-                        'Key': folder_name + '/manifest.json'
+                        'Bucket': bucket,
+                        'Key': key
                     }
                 }
             },
@@ -47,27 +46,25 @@ class Quicksight:
         )
         print("Create new source completed")
 
-    def create_datasource(self):
+    def create_datasource(self, data_source_id, name, bucket, key):
 
         try:
-            self.create_new_datasource()
+            self.create_new_datasource(data_source_id, name, bucket, key)
             print("Created new datasource complete")
         except:
-            self.update_datasource()
+            self.update_datasource(data_source_id, name, bucket, key)
 
-    def update_datasource(self):
-        now = datetime.now()
-        folder_name = now.strftime("%m/%d/%Y")
+    def update_datasource(self, data_source_id, name, bucket, key):
 
         response = self.client.update_data_source(
             AwsAccountId=self.account_id,
-            DataSourceId='unique-data-source-id-'+self.account_id,
-            Name='datasource'+self.account_id,
+            DataSourceId=data_source_id,
+            Name=name,
             DataSourceParameters={
                 'S3Parameters': {
                     'ManifestFileLocation': {
-                        'Bucket': 'new-backup-report-based-arn-tags-'+self.account_id,
-                        'Key': folder_name + '/manifest.json'
+                        'Bucket': bucket,
+                        'Key': key
                     }
                 }
             }
@@ -143,7 +140,7 @@ class Quicksight:
             time.sleep(5)
             self.create_new_dataset()
 
-    def update_dateset(self):
+    def update_dataset(self):
 
         response = self.client.update_data_set(
             AwsAccountId=self.account_id,
@@ -213,12 +210,17 @@ class Quicksight:
                 ],
                 SourceEntity={
                     'SourceAnalysis': {
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
+                        # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/17e1db06-e7ac-47a5-9df0-62be93c9a33e',
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/unique-id-for-new-analysis774446988871',
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ]
                     }
                 }
@@ -232,12 +234,17 @@ class Quicksight:
                 TemplateId='unique-id-for-new-template'+self.account_id,
                 SourceEntity={
                     'SourceAnalysis': {
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/3f55df65-8c60-4a5c-bc24-926502089523',
+                        # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/17e1db06-e7ac-47a5-9df0-62be93c9a33e',
+                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/unique-id-for-new-analysis774446988871',
                         'DataSetReferences': [
                             {
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ]
                     }
                 }
@@ -274,6 +281,10 @@ class Quicksight:
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ],
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id,
                     }
@@ -292,6 +303,10 @@ class Quicksight:
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ],
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id,
                     }
@@ -328,6 +343,10 @@ class Quicksight:
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ],
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id
                     }
@@ -346,6 +365,10 @@ class Quicksight:
                                 'DataSetPlaceholder': 'ds-123',
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-dataset'+self.account_id
                             },
+                            {
+                                'DataSetPlaceholder': 'cost-ds-123',
+                                'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/unique-id-for-new-cost-dataset'+self.account_id
+                            }
                         ],
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/unique-id-for-new-template'+self.account_id
                     }
@@ -404,79 +427,647 @@ class Quicksight:
         except NameError:
             print("Error when deleting dashboard")
 
-    # pp = pprint.PrettyPrinter(depth=4)
+    def create_new_cost_dataset(self):
+        response = self.client.create_data_set(
+            AwsAccountId=self.account_id,
+            DataSetId='unique-id-for-new-cost-dataset'+self.account_id,
+            Name='cost_dataset'+self.account_id,
+            PhysicalTableMap={
+                'string': {
+                    'S3Source': {
+                        'DataSourceArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':datasource/'+'unique-cost-data-source-id-'+self.account_id,
+                        'UploadSettings': {
+                            'Format': 'CSV',
+                            'StartFromRow': 1,
+                            'ContainsHeader': True,
+                            'TextQualifier': 'DOUBLE_QUOTE',
+                            'Delimiter': ','
+                        },
+                        'InputColumns': [
+                            {'Name': 'identity/LineItemId',
+                             'Type': 'STRING'},
+                            {'Name': 'identity/TimeInterval',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/InvoiceId',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/InvoicingEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillType',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/PayerAccountId',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingPeriodStartDate',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingPeriodEndDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageAccountId',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LineItemType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageStartDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageEndDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/ProductCode',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/Operation',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/AvailabilityZone',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/ResourceId',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageAmount',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/NormalizationFactor',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/NormalizedUsageAmount',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/CurrencyCode',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UnblendedRate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UnblendedCost',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/BlendedRate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/BlendedCost',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LineItemDescription',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/TaxType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LegalEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'product/ProductName',
+                                'Type': 'STRING'},
+                            {'Name': 'product/availability',
+                                'Type': 'STRING'},
+                            {'Name': 'product/availabilityZone',
+                                'Type': 'STRING'},
+                            {'Name': 'product/backupservice',
+                                'Type': 'STRING'},
+                            {'Name': 'product/capacitystatus',
+                                'Type': 'STRING'},
+                            {'Name': 'product/classicnetworkingsupport',
+                                'Type': 'STRING'},
+                            {'Name': 'product/clockSpeed',
+                                'Type': 'STRING'},
+                            {'Name': 'product/currentGeneration',
+                                'Type': 'STRING'},
+                            {'Name': 'product/databaseEngine',
+                                'Type': 'STRING'},
+                            {'Name': 'product/datatransferout',
+                                'Type': 'STRING'},
+                            {'Name': 'product/dedicatedEbsThroughput',
+                                'Type': 'STRING'},
+                            {'Name': 'product/deploymentOption',
+                                'Type': 'STRING'},
+                            {'Name': 'product/description',
+                                'Type': 'STRING'},
+                            {'Name': 'product/durability',
+                                'Type': 'STRING'},
+                            {'Name': 'product/ecu',
+                                'Type': 'STRING'},
+                            {'Name': 'product/edition',
+                                'Type': 'STRING'},
+                            {'Name': 'product/engineCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/enhancedNetworkingSupported',
+                                'Type': 'STRING'},
+                            {'Name': 'product/eventType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/freeQueryTypes',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromLocation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromLocationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromRegionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/group',
+                                'Type': 'STRING'},
+                            {'Name': 'product/groupDescription',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceTypeFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelAvx2Available',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelAvxAvailable',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelTurboAvailable',
+                                'Type': 'STRING'},
+                            {'Name': 'product/licenseModel',
+                                'Type': 'STRING'},
+                            {'Name': 'product/location',
+                                'Type': 'STRING'},
+                            {'Name': 'product/locationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/logsDestination',
+                                'Type': 'STRING'},
+                            {'Name': 'product/marketoption',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxIopsBurstPerformance',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxIopsvolume',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxThroughputvolume',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxVolumeSize',
+                                'Type': 'STRING'},
+                            {'Name': 'product/memory',
+                                'Type': 'STRING'},
+                            {'Name': 'product/messageDeliveryFrequency',
+                                'Type': 'STRING'},
+                            {'Name': 'product/messageDeliveryOrder',
+                                'Type': 'STRING'},
+                            {'Name': 'product/minVolumeSize',
+                                'Type': 'STRING'},
+                            {'Name': 'product/networkPerformance',
+                                'Type': 'STRING'},
+                            {'Name': 'product/normalizationSizeFactor',
+                                'Type': 'STRING'},
+                            {'Name': 'product/operatingSystem',
+                                'Type': 'STRING'},
+                            {'Name': 'product/operation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/physicalProcessor',
+                                'Type': 'STRING'},
+                            {'Name': 'product/platovolumetype',
+                                'Type': 'STRING'},
+                            {'Name': 'product/preInstalledSw',
+                                'Type': 'STRING'},
+                            {'Name': 'product/processorArchitecture',
+                                'Type': 'STRING'},
+                            {'Name': 'product/processorFeatures',
+                                'Type': 'STRING'},
+                            {'Name': 'product/productFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/queueType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/region',
+                                'Type': 'STRING'},
+                            {'Name': 'product/regionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/requestType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/servicecode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/servicename',
+                                'Type': 'STRING'},
+                            {'Name': 'product/sku',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storage',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageClass',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageMedia',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/subscriptionType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/tenancy',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toLocation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toLocationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toRegionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/transferType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/usagetype',
+                                'Type': 'STRING'},
+                            {'Name': 'product/vcpu',
+                                'Type': 'STRING'},
+                            {'Name': 'product/version',
+                                'Type': 'STRING'},
+                            {'Name': 'product/volumeApiName',
+                                'Type': 'STRING'},
+                            {'Name': 'product/volumeType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/vpcnetworkingsupport',
+                                'Type': 'STRING'},
+                            {'Name': 'product/withActiveUsers',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/RateCode',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/RateId',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/currency',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/publicOnDemandCost',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/publicOnDemandRate',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/term',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/unit',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/AmortizedUpfrontCostForUsage',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/AmortizedUpfrontFeeForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/EffectiveCost',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/EndTime',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/ModificationStatus',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/NormalizedUnitsPerReservation',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/NumberOfReservations',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/RecurringFeeForUsage',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/StartTime',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/SubscriptionId',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/TotalReservedNormalizedUnits',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/TotalReservedUnits',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnitsPerReservation',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedAmortizedUpfrontFeeForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedNormalizedUnitQuantity',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedQuantity',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedRecurringFee',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UpfrontValue',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/TotalCommitmentToDate',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanARN',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanRate',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/UsedCommitment',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanEffectiveCost',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/AmortizedUpfrontCommitmentForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/RecurringCommitmentForBillingPeriod',
+                                'Type': 'STRING'},
+                        ]
+                    }
+                }
+            },
+            ImportMode='SPICE',
+            Permissions=[
+                {
+                    'Principal': 'arn:aws:quicksight:us-east-1:'+self.account_id+':user/default/'+self.user,
+                    'Actions': [
+                        'quicksight:PassDataSet',
+                        'quicksight:DescribeIngestion',
+                        'quicksight:CreateIngestion',
+                        'quicksight:UpdateDataSet',
+                        'quicksight:DeleteDataSet',
+                        'quicksight:DescribeDataSet',
+                        'quicksight:CancelIngestion',
+                        'quicksight:DescribeDataSetPermissions',
+                        'quicksight:ListIngestions',
+                        'quicksight:UpdateDataSetPermissions'
+                    ]
+                },
+            ],
+        )
+        print("Update cost dataset complete")
 
-    # response = client.list_data_sources(
-    #     AwsAccountId='774446988871'
-    # )
-    # pp.pprint(response)
+    def create_cost_dataset(self):
 
-    # response = client.list_data_sets(
-    #     AwsAccountId=self.account_id,
-    # )
-    # pp.pprint(response)
+        try:
+            self.create_new_cost_dataset()
+            print("Created new cost dataset complete")
+        except:
+            self.delete_dataset(
+                'unique-id-for-new-cost-dataset'+self.account_id)
+            print("Wait 5 seconds for the dataset to delete ... ")
+            time.sleep(5)
+            self.create_new_cost_dataset()
 
-    # response = client.list_analyses(
-    #     AwsAccountId=self.account_id,
-    # )
-    # pp.pprint(response)
+    def update_cost_dataset(self):
 
-    # response = client.delete_data_source(
-    #     AwsAccountId=self.account_id,
-    #     DataSourceId='unique-data-source-id-123'
-    # )
+        response = self.client.update_data_set(
+            AwsAccountId=self.account_id,
+            DataSetId='unique-id-for-new-cost-dataset'+self.account_id,
+            Name='cost_dataset'+self.account_id,
+            PhysicalTableMap={
+                'string': {
+                    'S3Source': {
+                        'DataSourceArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':datasource/'+'unique-cost-data-source-id-'+self.account_id,
+                        'UploadSettings': {
+                            'Format': 'CSV',
+                            'StartFromRow': 1,
+                            'ContainsHeader': True,
+                            'TextQualifier': 'DOUBLE_QUOTE',
+                            'Delimiter': ','
+                        },
+                        'InputColumns': [
+                            {'Name': 'identity/LineItemId',
+                             'Type': 'STRING'},
+                            {'Name': 'identity/TimeInterval',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/InvoiceId',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/InvoicingEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillType',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/PayerAccountId',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingPeriodStartDate',
+                                'Type': 'STRING'},
+                            {'Name': 'bill/BillingPeriodEndDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageAccountId',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LineItemType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageStartDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageEndDate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/ProductCode',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/Operation',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/AvailabilityZone',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/ResourceId',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UsageAmount',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/NormalizationFactor',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/NormalizedUsageAmount',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/CurrencyCode',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UnblendedRate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/UnblendedCost',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/BlendedRate',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/BlendedCost',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LineItemDescription',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/TaxType',
+                                'Type': 'STRING'},
+                            {'Name': 'lineItem/LegalEntity',
+                                'Type': 'STRING'},
+                            {'Name': 'product/ProductName',
+                                'Type': 'STRING'},
+                            {'Name': 'product/availability',
+                                'Type': 'STRING'},
+                            {'Name': 'product/availabilityZone',
+                                'Type': 'STRING'},
+                            {'Name': 'product/backupservice',
+                                'Type': 'STRING'},
+                            {'Name': 'product/capacitystatus',
+                                'Type': 'STRING'},
+                            {'Name': 'product/classicnetworkingsupport',
+                                'Type': 'STRING'},
+                            {'Name': 'product/clockSpeed',
+                                'Type': 'STRING'},
+                            {'Name': 'product/currentGeneration',
+                                'Type': 'STRING'},
+                            {'Name': 'product/databaseEngine',
+                                'Type': 'STRING'},
+                            {'Name': 'product/datatransferout',
+                                'Type': 'STRING'},
+                            {'Name': 'product/dedicatedEbsThroughput',
+                                'Type': 'STRING'},
+                            {'Name': 'product/deploymentOption',
+                                'Type': 'STRING'},
+                            {'Name': 'product/description',
+                                'Type': 'STRING'},
+                            {'Name': 'product/durability',
+                                'Type': 'STRING'},
+                            {'Name': 'product/ecu',
+                                'Type': 'STRING'},
+                            {'Name': 'product/edition',
+                                'Type': 'STRING'},
+                            {'Name': 'product/engineCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/enhancedNetworkingSupported',
+                                'Type': 'STRING'},
+                            {'Name': 'product/eventType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/freeQueryTypes',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromLocation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromLocationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/fromRegionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/group',
+                                'Type': 'STRING'},
+                            {'Name': 'product/groupDescription',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/instanceTypeFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelAvx2Available',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelAvxAvailable',
+                                'Type': 'STRING'},
+                            {'Name': 'product/intelTurboAvailable',
+                                'Type': 'STRING'},
+                            {'Name': 'product/licenseModel',
+                                'Type': 'STRING'},
+                            {'Name': 'product/location',
+                                'Type': 'STRING'},
+                            {'Name': 'product/locationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/logsDestination',
+                                'Type': 'STRING'},
+                            {'Name': 'product/marketoption',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxIopsBurstPerformance',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxIopsvolume',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxThroughputvolume',
+                                'Type': 'STRING'},
+                            {'Name': 'product/maxVolumeSize',
+                                'Type': 'STRING'},
+                            {'Name': 'product/memory',
+                                'Type': 'STRING'},
+                            {'Name': 'product/messageDeliveryFrequency',
+                                'Type': 'STRING'},
+                            {'Name': 'product/messageDeliveryOrder',
+                                'Type': 'STRING'},
+                            {'Name': 'product/minVolumeSize',
+                                'Type': 'STRING'},
+                            {'Name': 'product/networkPerformance',
+                                'Type': 'STRING'},
+                            {'Name': 'product/normalizationSizeFactor',
+                                'Type': 'STRING'},
+                            {'Name': 'product/operatingSystem',
+                                'Type': 'STRING'},
+                            {'Name': 'product/operation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/physicalProcessor',
+                                'Type': 'STRING'},
+                            {'Name': 'product/platovolumetype',
+                                'Type': 'STRING'},
+                            {'Name': 'product/preInstalledSw',
+                                'Type': 'STRING'},
+                            {'Name': 'product/processorArchitecture',
+                                'Type': 'STRING'},
+                            {'Name': 'product/processorFeatures',
+                                'Type': 'STRING'},
+                            {'Name': 'product/productFamily',
+                                'Type': 'STRING'},
+                            {'Name': 'product/queueType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/region',
+                                'Type': 'STRING'},
+                            {'Name': 'product/regionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/requestType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/servicecode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/servicename',
+                                'Type': 'STRING'},
+                            {'Name': 'product/sku',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storage',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageClass',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageMedia',
+                                'Type': 'STRING'},
+                            {'Name': 'product/storageType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/subscriptionType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/tenancy',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toLocation',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toLocationType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/toRegionCode',
+                                'Type': 'STRING'},
+                            {'Name': 'product/transferType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/usagetype',
+                                'Type': 'STRING'},
+                            {'Name': 'product/vcpu',
+                                'Type': 'STRING'},
+                            {'Name': 'product/version',
+                                'Type': 'STRING'},
+                            {'Name': 'product/volumeApiName',
+                                'Type': 'STRING'},
+                            {'Name': 'product/volumeType',
+                                'Type': 'STRING'},
+                            {'Name': 'product/vpcnetworkingsupport',
+                                'Type': 'STRING'},
+                            {'Name': 'product/withActiveUsers',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/RateCode',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/RateId',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/currency',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/publicOnDemandCost',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/publicOnDemandRate',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/term',
+                                'Type': 'STRING'},
+                            {'Name': 'pricing/unit',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/AmortizedUpfrontCostForUsage',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/AmortizedUpfrontFeeForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/EffectiveCost',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/EndTime',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/ModificationStatus',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/NormalizedUnitsPerReservation',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/NumberOfReservations',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/RecurringFeeForUsage',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/StartTime',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/SubscriptionId',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/TotalReservedNormalizedUnits',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/TotalReservedUnits',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnitsPerReservation',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedAmortizedUpfrontFeeForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedNormalizedUnitQuantity',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedQuantity',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UnusedRecurringFee',
+                                'Type': 'STRING'},
+                            {'Name': 'reservation/UpfrontValue',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/TotalCommitmentToDate',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanARN',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanRate',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/UsedCommitment',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/SavingsPlanEffectiveCost',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/AmortizedUpfrontCommitmentForBillingPeriod',
+                                'Type': 'STRING'},
+                            {'Name': 'savingsPlan/RecurringCommitmentForBillingPeriod',
+                                'Type': 'STRING'},
+                        ]
+                    }
+                }
+            },
+            ImportMode='SPICE',
+        )
+        print("Updated cost dataset")
 
-    # print(response)
 
-    # response = client.delete_data_set(
-    #     AwsAccountId=self.account_id,
-    #     DataSetId='unique-id-for-new-dataset'
-    # )
-    # print(response)
+# client = boto3.client('quicksight')
 
-    # response = client.list_templates(
-    #     AwsAccountId=self.account_id,
-    # )
-    # print(response)
+# response = client.list_data_sets(
+#     AwsAccountId='774446988871'
+# )
 
-    # response = client.describe_user(
-    #     UserName='774446988871',
-    #     AwsAccountId=self.account_id,
-    #     Namespace='default'
-    # )
-
-    # print(response)
-
-    # client = boto3.client('quicksight')
-    # response = client.describe_analysis(
-    #     AwsAccountId='774446988871',
-    #     AnalysisId='3f55df65-8c60-4a5c-bc24-926502089523'
-    # )
-
-    # print(response)
-
-    # response = client.describe_template(
-    #     AwsAccountId=self.account_id,
-    #     TemplateId='unique-id-for-new-template',
-    # )
-
-    # print(response)
-
-    # client = boto3.client('quicksight')
-
-    # response = client.delete_template(
-    #     AwsAccountId='774446988871',
-    #     TemplateId='unique-id-for-new-template774446988871'
-    # )
-    # print("Successfully when deleting template")
-
-    # client = boto3.client('quicksight')
-    # response = client.list_data_sources(
-    #     AwsAccountId='774446988871'
-    # )
-    # print(response)
-
-    # response = client.list_data_sets(
-    #     AwsAccountId='774446988871',
-    # )
-    # print(response)
+# print(response)
