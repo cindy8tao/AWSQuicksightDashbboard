@@ -55,7 +55,6 @@ class Quicksight:
             self.update_datasource(data_source_id, name, bucket, key)
 
     def update_datasource(self, data_source_id, name, bucket, key):
-
         response = self.client.update_data_source(
             AwsAccountId=self.account_id,
             DataSourceId=data_source_id,

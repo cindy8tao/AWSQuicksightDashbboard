@@ -1,0 +1,25 @@
+ResourceArn,ResourceType,Department,Environment
+arn:aws:backup:us-east-1:774446988871:recovery-point:cost-report-for-quicksight-774446988871-20220710185509-0bf048d3,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:function-for-lambda-20220710215421-5b59748e,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-7744469-20220710191910-0a597d06,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710152559-d638ffd2,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710123056-2af93f75,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710092941-f2fdeadf,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710063226-da2f39f1,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710032933-82e900ab,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220710003259-9b46e0df,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220709212812-540061f9,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:new-backup-report-based-arn-tags-20220709182737-e2cce542,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707183108-f536bb39,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707153509-22c22600,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707123246-c19bbb83,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707093122-935f0045,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707063204-80c8593c,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707033305-1bb227f4,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220707003151-09fd852d,S3,Marketing,Dev
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220704123645-766ead9e,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220704093549-ce9d4596,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220704063443-16083cf1,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:abucketfromvscode-20220704033118-28470227,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:backupfromvscode-20220703222400-71db2bbb,S3, , 
+arn:aws:backup:us-east-1:774446988871:recovery-point:backupfromvscode-20220703132827-41a47c2b,S3, , 

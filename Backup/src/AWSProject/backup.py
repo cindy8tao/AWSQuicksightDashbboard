@@ -77,10 +77,10 @@ class Backup:
             response = self.client.list_recovery_points_by_backup_vault(
                 BackupVaultName='Default',
             )
-            size = len(response['RecoveryPoints'])
-            # size = 10
 
+            size = len(response['RecoveryPoints'])
             data_file = {}
+            header_list = []
 
             for i in range(size):
                 resource_arn = response['RecoveryPoints'][i]['RecoveryPointArn']
@@ -90,8 +90,12 @@ class Backup:
                 )
                 data_file[resource_arn] = [tags['Tags'],
                                            response['RecoveryPoints'][0]['ResourceType']]
+                if tags['Tags'] != {}:
+                    for key in list(tags['Tags'].keys()):
+                        if key not in header_list:
+                            header_list.append(key)
 
-            self.write_to_csv(data_file)
+            self.write_to_csv(data_file, header_list)
             print("Complete writing csv file")
 
             self.write_to_json(data_file)
@@ -100,24 +104,24 @@ class Backup:
         except NameError:
             print("Error listing recovery point with tags")
 
-    def write_to_csv(self, data_file):
+    def write_to_csv(self, data_file, header_list):
         csv_file = open('/tmp/csv_file.csv', 'w+')
         csv_writer = csv.writer(csv_file)
         count = 1
 
-        header = ["ResourceArn", "Department", "Environment", "ResourceType"]
+        header = ["ResourceArn", "ResourceType"]
+        for h in header_list:
+            header.append(h)
         csv_writer.writerow(header)
 
         for key, value, in data_file.items():
-            row = [key]
+            row = [key, value[1]]
             if len(value[0]) == 0:
                 row.append(" ")
                 row.append(" ")
             else:
                 for v in value[0].values():
                     row.append(v)
-            row.append(value[1])
-
             csv_writer.writerow(row)
             count += 1
 
@@ -128,3 +132,56 @@ class Backup:
         with open('/tmp/file.json', 'w+') as outfile:
             outfile.write(json.dumps(data_file))
             outfile.close()
+
+
+# client = boto3.client('backup')
+
+# response = client.list_recovery_points_by_backup_vault(
+#     BackupVaultName='Default',
+# )
+
+# size = len(response['RecoveryPoints'])
+# data_file = {}
+# header_list = []
+
+# for i in range(size):
+#     resource_arn = response['RecoveryPoints'][i]['RecoveryPointArn']
+#     tags = client.list_tags(
+#         ResourceArn=resource_arn
+
+#     )
+#     data_file[resource_arn] = [tags['Tags'],
+#                                response['RecoveryPoints'][0]['ResourceType']]
+#     if tags['Tags'] != {}:
+#         for key in list(tags['Tags'].keys()):
+#             if key not in header_list:
+#                 header_list.append(key)
+
+
+# csv_file = open(
+#     '/Users/cindytao/Document/GitHub/AWSQuicksightDashbboard/Backup/src/AWSProject/csv_file.csv', 'w+')
+# csv_writer = csv.writer(csv_file)
+# count = 1
+
+
+# header = ["ResourceArn", "ResourceType"]
+# for h in header_list:
+#     header.append(h)
+# csv_writer.writerow(header)
+
+# for key, value, in data_file.items():
+#     row = [key, value[1]]
+#     if len(value[0]) == 0:
+#         row.append(" ")
+#         row.append(" ")
+#     else:
+#         for v in value[0].values():
+#             row.append(v)
+#             print(v)
+
+#     csv_writer.writerow(row)
+#     count += 1
+
+# csv_file.close()
+
+# print("Complete writing csv file")

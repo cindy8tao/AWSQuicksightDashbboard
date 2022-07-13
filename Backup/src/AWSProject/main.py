@@ -250,7 +250,7 @@ def main():
     data_source_id = 'unique-cost-data-source-id-' + account_id
     name = 'cost-datasource' + account_id
     bucket = 'cost-report-for-quicksight-' + account_id
-    key = folder_name + '/costreport/QuickSight/costreport-' + \
+    key = '07/10/2022' + '/costreport/QuickSight/costreport-' + \
         current_month + '-' + next_month + '-QuickSightManifest.json'
 
     create_datasource(account_id, data_source_id, name, bucket, key)
