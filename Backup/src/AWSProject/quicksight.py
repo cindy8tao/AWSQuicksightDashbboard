@@ -162,7 +162,7 @@ class Quicksight:
 
         columns.append({
             'Name': 'BackupSize',
-            'Type': 'STRING'
+            'Type': 'DECIMAL'
         },)
 
         for tag in tags:
@@ -183,7 +183,7 @@ class Quicksight:
                             'Format': 'CSV',
                             'StartFromRow': 1,
                             'ContainsHeader': True,
-                            'TextQualifier': 'SINGLE_QUOTE',
+                            'TextQualifier': 'DOUBLE_QUOTE',
                             'Delimiter': ','
                         },
                         'InputColumns': columns

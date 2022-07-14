@@ -90,10 +90,11 @@ class Backup:
                 )
 
                 tag = tags['Tags']
-                resource_type = response['RecoveryPoints'][0]['ResourceType']
-                backup_size = float(
-                    response['RecoveryPoints'][0]['BackupSizeInBytes'])
-
+                resource_type = response['RecoveryPoints'][i]['ResourceType']
+                # backup_size = int(
+                #     response['RecoveryPoints'][i]['BackupSizeInBytes'])
+                # backup_size = response['RecoveryPoints'][i]['BackupSizeInBytes']
+                backup_size = 8392018
                 data_file[resource_arn] = [tag, resource_type, backup_size]
                 if tags['Tags'] != {}:
                     for key in list(tags['Tags'].keys()):
@@ -145,6 +146,7 @@ class Backup:
         csv_writer.writerow(header)
 
         for key, value, in data_file.items():
+            print(type(value[2]))
             row = [key, value[1], value[2]]
             if len(value[0]) == 0:
                 row.append(" ")
