@@ -147,9 +147,9 @@ def get_tags(account_id):
     return backupClass.get_tags()
 
 
-def get_cost_and_usage(account_id, tags):
+def get_cost_by_tags(account_id, tags):
     costClass = cost.Cost(account_id, cost_client)
-    costClass.get_cost_and_usage(tags)
+    costClass.get_cost_by_tags(tags)
 
 # def lambda_handler(event, context):
 
@@ -162,7 +162,7 @@ def main():
 
     tags = get_tags(account_id)
     print(tags)
-    get_cost_and_usage(account_id, tags)
+    get_cost_by_tags(account_id, tags)
     # #####################################################
     # # Create the following backup plans                 #
     # #####################################################
