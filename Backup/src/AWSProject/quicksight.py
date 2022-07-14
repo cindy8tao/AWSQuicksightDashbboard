@@ -92,17 +92,17 @@ class Quicksight:
                                 'Type': 'STRING'
                             },
                             {
+                                'Name': 'ResourceType',
+                                'Type': 'STRING'
+                            },
+                            {
                                 'Name': 'Environment',
                                 'Type': 'STRING'
                             },
                             {
                                 'Name': 'Department',
                                 'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'ResourceType',
-                                'Type': 'STRING'
-                            },
+                            }
                         ]
                     }
                 }
@@ -162,17 +162,17 @@ class Quicksight:
                                 'Type': 'STRING'
                             },
                             {
+                                'Name': 'ResourceType',
+                                'Type': 'STRING'
+                            },
+                            {
                                 'Name': 'Environment',
                                 'Type': 'STRING'
                             },
                             {
                                 'Name': 'Department',
                                 'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'ResourceType',
-                                'Type': 'STRING'
-                            },
+                            }
                         ]
                     }
                 }
@@ -209,7 +209,7 @@ class Quicksight:
                 ],
                 SourceEntity={
                     'SourceAnalysis': {
-                        # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/17e1db06-e7ac-47a5-9df0-62be93c9a33e',
+                        # 'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/d2aa6425-695a-43d0-bfaa-d5da144f49b6',
                         'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':analysis/unique-id-for-new-analysis774446988871',
                         'DataSetReferences': [
                             {
@@ -224,8 +224,8 @@ class Quicksight:
                     }
                 }
             )
-            print("Wait 5 seconds for the template to finish creation ... ")
-            time.sleep(5)
+            print("Wait 10 seconds for the template to finish creation ... ")
+            time.sleep(10)
             print("Successfully created template")
         except:
             response = self.client.update_template(
@@ -248,8 +248,8 @@ class Quicksight:
                     }
                 }
             )
-            print("Wait 5 seconds for the template to updating ... ")
-            time.sleep(5)
+            print("Wait 10 seconds for the template to updating ... ")
+            time.sleep(10)
             print("Successfully updated template")
 
     def create_analysis(self):
@@ -1064,9 +1064,19 @@ class Quicksight:
 
 
 # client = boto3.client('quicksight')
+# pp = pprint.PrettyPrinter(indent=4)
 
 # response = client.list_data_sets(
 #     AwsAccountId='774446988871'
 # )
 
-# print(response)
+# response = client.list_analyses(
+#     AwsAccountId='774446988871'
+# )
+
+# response = client.delete_template(
+#     AwsAccountId='774446988871',
+#     TemplateId='unique-id-for-new-template',
+# )
+
+# pp.pprint(response)
