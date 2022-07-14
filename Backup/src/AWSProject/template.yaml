@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  BackupReportBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join [ '', [ 'bucket-for-backup-' , !Ref 'AWS::AccountId'] ]
+      VersioningConfiguration:
+        Status: Enabled
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 764b6d78-f8f4-447a-97f6-99a92baacf25
+  CostReportBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join [ '', [ 'bucket-for-cost-' , !Ref 'AWS::AccountId'] ]
+      VersioningConfiguration:
+        Status: Enabled
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 2198c3f5-0ac3-48c6-b9bf-f09a9b26160b
+
+  ReporterForAWSBackupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service: quicksight.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Sub >-
+          arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: invokeLambda
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'lambda:InvokeFunction'
+                Resource: '*'
+        - PolicyName: logStreamPermissions
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:${AWS::Partition}:logs:*:*:*'
+        - PolicyName: GlueAthenaPermissions
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'athena:*'
+                  - 'glue:*'
+                Resource: '*'
+        - PolicyName: SESPermissions
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'SES:SendRawEmail'
+                  - 'SES:SendEmail'
+                  - 'SES:VerifyEmailIdentity'
+                  - 'SES:GetIdentityVerificationAttributes'
+                Resource: '*'
+  
+  LambdaFunctions:
+    Type: 'AWS::Lambda::Function'
+    Properties: 
+      Handler: /functions/lambda_function.handler
+      Role: !GetAtt 
+      - ReporterForAWSBackupRole
+      - Arn
+      Code:
+        S3Bucket: function-for-lambda
+        S3Key: functions.zip
+      Runtime: python3.9
+      Timeout: 300
+
+
+
+  

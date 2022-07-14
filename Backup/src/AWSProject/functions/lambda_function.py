@@ -3,6 +3,7 @@ import backup
 import s3
 import jsonfile
 import quicksight
+import cost
 from datetime import datetime
 import costreport
 from datetime import datetime
@@ -19,6 +20,7 @@ rds_client = boto3.client('rds')
 glue_client = boto3.client('glue')
 quicksight_client = boto3.client('quicksight')
 costreport_client = boto3.client('cur')
+cost_client = boto3.client('ce')
 
 
 def create_backup_plan(account_id, start_window_minutes, completion_window_minutes, target_backup_vault_name, hrs, environment, department):
@@ -75,10 +77,10 @@ def update_datasource(account_id, data_source_id, name, bucket, key):
     quicksightClass.update_datasource(data_source_id, name, bucket, key)
 
 
-def create_dataset(account_id):
+def create_dataset(account_id, tags):
     quicksightClass = quicksight.Quicksight(
         account_id, quicksight_client, account_id)
-    quicksightClass.create_dataset()
+    quicksightClass.create_dataset(tags)
 
 
 def create_cost_dataset(account_id):
@@ -140,10 +142,23 @@ def create_cost_report(bucket_name):
     costreportClass.create_cost_report(bucket_name)
 
 
+def get_tags(account_id):
+    backupClass = backup.Backup(account_id, backup_client)
+    return backupClass.get_tags()
+
+
+def get_cost_by_tags(account_id, tags):
+    costClass = cost.Cost(account_id, cost_client)
+    costClass.get_cost_by_tags(tags)
+
+
 def lambda_handler(event, context):
 
     print("Welcome to create your Quicksight Backup Dashboard ")
     account_id = context.invoked_function_arn.split(":")[4]
+
+    tags = get_tags(account_id)
+    get_cost_by_tags(account_id, tags)
 
     #####################################################
     # Create the following backup plans                 #
@@ -248,12 +263,12 @@ def lambda_handler(event, context):
     data_source_id = 'unique-cost-data-source-id-' + account_id
     name = 'cost-datasource' + account_id
     bucket = 'cost-report-for-quicksight-' + account_id
-    key = folder_name + '/costreport/QuickSight/costreport-' + \
+    key = '07/10/2022' + '/costreport/QuickSight/costreport-' + \
         current_month + '-' + next_month + '-QuickSightManifest.json'
 
     create_datasource(account_id, data_source_id, name, bucket, key)
 
-    create_dataset(account_id)
+    create_dataset(account_id, tags)
     create_cost_dataset(account_id)
     create_template(account_id)
     create_analysis(account_id)
