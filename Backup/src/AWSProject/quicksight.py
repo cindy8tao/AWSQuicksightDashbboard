@@ -70,7 +70,31 @@ class Quicksight:
         )
         print("Updated source")
 
-    def create_new_dataset(self):
+    def create_new_dataset(self, tags):
+
+        columns = []
+
+        columns.append({
+            'Name': 'ResourceArn',
+            'Type': 'STRING'
+        },)
+
+        columns.append({
+            'Name': 'ResourceType',
+            'Type': 'STRING'
+        },)
+
+        columns.append({
+            'Name': 'BackupSize',
+            'Type': 'STRING'
+        },)
+
+        for tag in tags:
+            columns.append({
+                'Name': tag,
+                'Type': 'STRING'
+            },)
+
         response = self.client.create_data_set(
             AwsAccountId=self.account_id,
             DataSetId='unique-id-for-new-dataset'+self.account_id,
@@ -86,24 +110,7 @@ class Quicksight:
                             'TextQualifier': 'SINGLE_QUOTE',
                             'Delimiter': ','
                         },
-                        'InputColumns': [
-                            {
-                                'Name': 'ResourceArn',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'ResourceType',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'Environment',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'Department',
-                                'Type': 'STRING'
-                            }
-                        ]
+                        'InputColumns': columns
                     }
                 }
             },
@@ -128,18 +135,41 @@ class Quicksight:
         )
         print("Update dataset complete")
 
-    def create_dataset(self):
+    def create_dataset(self, tags):
 
         try:
-            self.create_new_dataset()
+            self.create_new_dataset(tags)
             print("Created new dataset complete")
         except:
             self.delete_dataset('unique-id-for-new-dataset'+self.account_id)
             print("Wait 5 seconds for the dataset to delete ... ")
             time.sleep(5)
-            self.create_new_dataset()
+            self.create_new_dataset(tags)
 
-    def update_dataset(self):
+    def update_dataset(self, tags):
+
+        columns = []
+
+        columns.append({
+            'Name': 'ResourceArn',
+            'Type': 'STRING'
+        },)
+
+        columns.append({
+            'Name': 'ResourceType',
+            'Type': 'STRING'
+        },)
+
+        columns.append({
+            'Name': 'BackupSize',
+            'Type': 'STRING'
+        },)
+
+        for tag in tags:
+            columns.append({
+                'Name': tag,
+                'Type': 'STRING'
+            },)
 
         response = self.client.update_data_set(
             AwsAccountId=self.account_id,
@@ -156,24 +186,7 @@ class Quicksight:
                             'TextQualifier': 'SINGLE_QUOTE',
                             'Delimiter': ','
                         },
-                        'InputColumns': [
-                            {
-                                'Name': 'ResourceArn',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'ResourceType',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'Environment',
-                                'Type': 'STRING'
-                            },
-                            {
-                                'Name': 'Department',
-                                'Type': 'STRING'
-                            }
-                        ]
+                        'InputColumns': columns
                     }
                 }
             },

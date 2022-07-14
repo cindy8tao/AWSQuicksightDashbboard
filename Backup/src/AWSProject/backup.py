@@ -88,8 +88,13 @@ class Backup:
                     ResourceArn=resource_arn
 
                 )
-                data_file[resource_arn] = [tags['Tags'],
-                                           response['RecoveryPoints'][0]['ResourceType']]
+
+                tag = tags['Tags']
+                resource_type = response['RecoveryPoints'][0]['ResourceType']
+                backup_size = float(
+                    response['RecoveryPoints'][0]['BackupSizeInBytes'])
+
+                data_file[resource_arn] = [tag, resource_type, backup_size]
                 if tags['Tags'] != {}:
                     for key in list(tags['Tags'].keys()):
                         if key not in header_list:
@@ -134,13 +139,13 @@ class Backup:
         csv_writer = csv.writer(csv_file)
         count = 1
 
-        header = ["ResourceArn", "ResourceType"]
+        header = ["ResourceArn", "ResourceType", "BackupSize"]
         for h in header_list:
             header.append(h)
         csv_writer.writerow(header)
 
         for key, value, in data_file.items():
-            row = [key, value[1]]
+            row = [key, value[1], value[2]]
             if len(value[0]) == 0:
                 row.append(" ")
                 row.append(" ")
