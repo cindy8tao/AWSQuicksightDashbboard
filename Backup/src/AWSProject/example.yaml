@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  BackupReportBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join [ '', [ 'bucket-for-backup-' , !Ref 'AWS::AccountId'] ]
+      VersioningConfiguration:
+        Status: Enabled
