@@ -3,18 +3,39 @@ Resources:
   BackupReportBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Join [ '', [ 'bucket-for-backup-' , !Ref 'AWS::AccountId'] ]
+      BucketName: !Join [ '', [ 'new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId'] ]
       VersioningConfiguration:
         Status: Enabled
 
   CostReportBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Join [ '', [ 'bucket-for-cost-' , !Ref 'AWS::AccountId'] ]
+      BucketName: !Join [ '', [ 'cost-report-for-quicksight-' , !Ref 'AWS::AccountId'] ]
       VersioningConfiguration:
         Status: Enabled
 
-  ReporterForAWSBackupRole:
+  PermissionForEventsToInvokeLambda:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref LambdaFunctions
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt RefreshSchedule.Arn
+
+  RefreshSchedule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: Trigger Lambda
+      Name: RefreshSchedule
+      ScheduleExpression: cron(0 */12 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt
+          - LambdaFunctions
+          - Arn
+          Id: RefreshSchedule
+    
+  AWSBackupRole:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -29,65 +50,31 @@ Resources:
               Service: quicksight.amazonaws.com
             Action:
               - 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - !Sub >-
-          arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
       Policies:
-        - PolicyName: invokeLambda
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'lambda:InvokeFunction'
-                Resource: '*'
-        - PolicyName: logStreamPermissions
-          PolicyDocument:
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'logs:CreateLogGroup'
-                  - 'logs:CreateLogStream'
-                  - 'logs:PutLogEvents'
-                Resource: !Sub 'arn:${AWS::Partition}:logs:*:*:*'
-        - PolicyName: GlueAthenaPermissions
-          PolicyDocument:
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'athena:*'
-                  - 'glue:*'
-                Resource: '*'
-        - PolicyName: SESPermissions
-          PolicyDocument:
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'SES:SendRawEmail'
-                  - 'SES:SendEmail'
-                  - 'SES:VerifyEmailIdentity'
-                  - 'SES:GetIdentityVerificationAttributes'
-                Resource: '*'
         - PolicyName: AdministratorAccess
           PolicyDocument:
             Statement:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
-  
+
   LambdaFunctions:
     Type: 'AWS::Lambda::Function'
     Properties: 
       Handler: /functions/lambda_function.handler
       Role: !GetAtt 
-      - ReporterForAWSBackupRole
+      - AWSBackupRole
       - Arn
       Code:
         S3Bucket: function-for-lambda
         S3Key: functions.zip
+      Environment: 
+        Variables:
+          ConfigDataRefreshScheduleName: RefreshSchedule
       Runtime: python3.9
       Timeout: 300
-
-
-
-  

@@ -1,8 +1,101 @@
 AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  StackBinaryURL:
+    Description: The URL for the StackBinary Zip File
+    Type: String
+    Default: >-
+      https://awsstorageblogresources.s3.us-west-2.amazonaws.com/backupobserverblog/bos-for-aws-backup.zip
+  ReporterRegion:
+    Description: The region for reporting infrastructure
+    Type: String
+  ReporterAccountID:
+    Description: The account id for reporting infrastructure
+    Type: String
 Resources:
-  BackupReportBucket:
-    Type: 'AWS::S3::Bucket'
+  ProcessAWSBackupVaultStatusEventRule:
+    Type: 'AWS::Events::Rule'
     Properties:
-      BucketName: !Join [ '', [ 'bucket-for-backup-' , !Ref 'AWS::AccountId'] ]
-      VersioningConfiguration:
-        Status: Enabled
+      Name: ProcessAWSBackupVaultStatusEventRule
+      Description: Rule to direct AWS Backup Events to Lambda
+      State: ENABLED
+      EventPattern:
+        source:
+          - aws.backup
+        detail-type:
+          - Backup Job State Change
+          - Restore Job State Change
+          - Copy Job State Change
+      Targets:
+        - Arn: !GetAtt 
+            - ObserverForAWSBackupLambda
+            - Arn
+          Id: ProcessAWSBackupEventsUsingLambda
+  ObserverForAWSBackupLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Function to manage AWS Backup events.
+      FunctionName: ObserverForAWSBackupLambda
+      Handler: lambda_handler.handler
+      Role: !GetAtt 
+        - ObserverForAWSBackupRole
+        - Arn
+      Runtime: python3.7
+      MemorySize: 1024
+      Timeout: 900
+      Code:
+        S3Bucket: !Ref SolutionLocalCacheBucket
+        S3Key: bos-for-aws-backup.zip
+      Environment:
+        Variables:
+          S3BackupManagerLogBucket: !Ref SolutionLocalCacheBucket
+          S3BackupManagerLogKey: aws-backup-logs
+          BackupManagerStackId: !Ref 'AWS::StackId'
+          AWSBackupEventsBusArn: !Sub >-
+            arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:event-bus/default
+          BackupAuditManagerReportItemsKey: reportItems
+          BackupAuditManagerReportBucket: !Ref SolutionLocalCacheBucket
+          BackupAuditManagerReportFolder: AWSBackupAuditManagerReports
+          ConfigDataRefreshScheduleName: AWSConfigDataRefreshSchedule
+          AWSConfigSupportedResourceTypes: >-
+            AWS::EC2::Volume,AWS::EC2::Instance,AWS::RDS::DBInstance,AWS::DynamoDB::Table,AWS::Backup::BackupPlan,AWS::Backup::BackupSelection,AWS::Backup::BackupVault,AWS::Backup::RecoveryPoint
+  ObserverInwardJobEventBus:
+    Type: 'AWS::Events::EventBus'
+    Properties:
+      Name: !Join 
+        - ''
+        - - BoS-ObserverInwardJobEventBus-
+          - !Ref 'AWS::AccountId'
+  ObserverInwardJobEventBusPolicy:
+    Type: 'AWS::Events::EventBusPolicy'
+    Properties:
+      EventBusName: !Ref ObserverInwardJobEventBus
+      StatementId: ObserverInwardJobEBP-AllowEventsFrmOthrRgnsAndAccnts
+      Statement:
+        Effect: Allow
+        Principal: '*'
+        Action: 'events:PutEvents'
+        Resource: !GetAtt ObserverInwardJobEventBus.Arn
+  ObserverInwardJobEventBusEventRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: Incoming Command Events for Observer
+      EventBusName: !Ref ObserverInwardJobEventBus
+      State: ENABLED
+      EventPattern:
+        source:
+          - observer.command
+      Targets:
+        - Arn: !GetAtt ObserverForAWSBackupLambda.Arn
+          Id: GlobalEventBridgeEvent
+Outputs:
+  StackName:
+    Value: !Ref 'AWS::StackName'
+  SolutionLocalCacheBucket:
+    Value: !Ref SolutionLocalCacheBucket
+  BackupJobReportPlanArn:
+    Value: !GetAtt BackupJobReportPlan.ReportPlanArn
+  RestoreJobReportPlanArn:
+    Value: !GetAtt RestoreJobReportPlan.ReportPlanArn
+  CopyJobReportPlanArn:
+    Value: !GetAtt CopyJobReportPlan.ReportPlanArn
