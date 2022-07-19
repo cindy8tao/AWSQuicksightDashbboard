@@ -12,7 +12,6 @@ class Cost:
         self.client = client
 
     def get_cost_and_usage(self, tag):
-        # try:
         response = self.client.get_cost_and_usage(
             TimePeriod={
                 'Start': '2022-07-01',

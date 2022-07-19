@@ -70,57 +70,57 @@ class S3:
     #     except NameError:
     #         print("Error when adding permission to S3 bucket")
 
-    def put_bucket_policy(self, bucket_name):
-        # Create a bucket policy
-        bucket_policy = {
-            "Version": "2008-10-17",
-            "Id": "Policy1335892530063",
-            "Statement": [
-                {
-                    "Sid": "Stmt1335892150622",
-                    "Effect": "Allow",
-                    "Principal": {
-                        "Service": "billingreports.amazonaws.com"
-                    },
-                    "Action": [
-                        "s3:GetBucketAcl",
-                        "s3:GetBucketPolicy"
-                    ],
-                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id,
-                    "Condition": {
-                        "StringEquals": {
-                            "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
-                            "aws:SourceAccount": self.account_id
-                        }
-                    }
-                },
-                {
-                    "Sid": "Stmt1335892526596",
-                    "Effect": "Allow",
-                    "Principal": {
-                        "Service": "billingreports.amazonaws.com"
-                    },
-                    "Action": "s3:PutObject",
-                    "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id+"/*",
-                    "Condition": {
-                        "StringEquals": {
-                            "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
-                            "aws:SourceAccount": self.account_id
-                        }
-                    }
-                }
-            ]
-        }
+    # def put_bucket_policy(self, bucket_name):
+    #     # Create a bucket policy
+    #     bucket_policy = {
+    #         "Version": "2008-10-17",
+    #         "Id": "Policy1335892530063",
+    #         "Statement": [
+    #             {
+    #                 "Sid": "Stmt1335892150622",
+    #                 "Effect": "Allow",
+    #                 "Principal": {
+    #                     "Service": "billingreports.amazonaws.com"
+    #                 },
+    #                 "Action": [
+    #                     "s3:GetBucketAcl",
+    #                     "s3:GetBucketPolicy"
+    #                 ],
+    #                 "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id,
+    #                 "Condition": {
+    #                     "StringEquals": {
+    #                         "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
+    #                         "aws:SourceAccount": self.account_id
+    #                     }
+    #                 }
+    #             },
+    #             {
+    #                 "Sid": "Stmt1335892526596",
+    #                 "Effect": "Allow",
+    #                 "Principal": {
+    #                     "Service": "billingreports.amazonaws.com"
+    #                 },
+    #                 "Action": "s3:PutObject",
+    #                 "Resource": "arn:aws:s3:::cost-report-for-quicksight-"+self.account_id+"/*",
+    #                 "Condition": {
+    #                     "StringEquals": {
+    #                         "aws:SourceArn": "arn:aws:cur:us-east-1:"+self.account_id+":definition/*",
+    #                         "aws:SourceAccount": self.account_id
+    #                     }
+    #                 }
+    #             }
+    #         ]
+    #     }
 
-        # Convert the policy from JSON dict to string
-        bucket_policy = json.dumps(bucket_policy)
+    #     # Convert the policy from JSON dict to string
+    #     bucket_policy = json.dumps(bucket_policy)
 
-        try:
-            self.client.put_bucket_policy(
-                Bucket=bucket_name, Policy=bucket_policy)
-            print("Successfully added permision to S3 bucket ")
-        except NameError:
-            print("Error when adding permission to S3 bucket")
+    #     try:
+    #         self.client.put_bucket_policy(
+    #             Bucket=bucket_name, Policy=bucket_policy)
+    #         print("Successfully added permision to S3 bucket ")
+    #     except NameError:
+    #         print("Error when adding permission to S3 bucket")
 
     def upload_to_S3(self, path, bucket_name, key, content_type):
 
