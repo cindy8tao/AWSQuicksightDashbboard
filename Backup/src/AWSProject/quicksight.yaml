@@ -99,10 +99,12 @@ Resources:
         CostPhysicalTable:
           CustomSQL:
             Columns:
-              - Name: Tags
+              - Name: col0
                 Type: STRING
-              - Name: UnblendedCost
-                Type: FLOAT
+              - Name: col1
+                Type: STRING
+              - Name: partition_0
+                Type: STRING
             DataSourceArn: !GetAtt CostDataSource.Arn
             Name: "20"
             SqlQuery: SELECT * FROM "cost-database-774446988871"."20"
