@@ -78,8 +78,8 @@ def main():
     now = datetime.now()
     date = now.strftime("/%m/%d/")
 
-    database_name = 'database-'
-    table_name = 'backup-report'
+    database_name = 'database_'
+    table_name = 'backup_report'
     column = [
         {
             'Name': 'resourcearn',
@@ -107,16 +107,16 @@ def main():
 
     create_table(account_id, table_name, database_name, column, location)
 
-    database_name = 'cost-database-'
-    table_name = 'cost-report'
+    database_name = 'cost_database_'
+    table_name = 'cost_report'
     column = [
         {
             'Name': 'start',
-            'Type': 'datetime',
+            'Type': 'date',
         },
         {
             'Name': 'end',
-            'Type': 'datetime',
+            'Type': 'date',
         },
         {
             'Name': 'tags',

@@ -106,11 +106,11 @@ Resources:
     Properties: 
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
-        Name: !Join [ '', [ 'database-' , !Ref 'AWS::AccountId'] ]
+        Name: !Join [ '', [ 'database_' , !Ref 'AWS::AccountId'] ]
 
   CostGlueDatabase:
     Type: AWS::Glue::Database
     Properties: 
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
-        Name: !Join [ '', [ 'cost-database-' , !Ref 'AWS::AccountId'] ]
+        Name: !Join [ '', [ 'cost_database_' , !Ref 'AWS::AccountId'] ]

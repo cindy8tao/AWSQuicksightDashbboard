@@ -38,8 +38,8 @@ class Cost:
                 tag_response = response['ResultsByTime'][i]['Groups'][0]['Keys'][0][:-1]
                 unblendedcost = float(
                     response['ResultsByTime'][i]['Groups'][0]['Metrics']['UnblendedCost']['Amount'])
-                start = response['ResultsByTime'][0]['TimePeriod']['End']
-                end = response['ResultsByTime'][0]['TimePeriod']['Start']
+                start = response['ResultsByTime'][0]['TimePeriod']['Start']
+                end = response['ResultsByTime'][0]['TimePeriod']['End']
 
                 row = [start, end, tag_response, unblendedcost]
                 cost_data.append(row)

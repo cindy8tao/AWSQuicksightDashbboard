@@ -73,7 +73,7 @@ Resources:
                 Type: STRING
             DataSourceArn: !GetAtt DataSource.Arn
             Name: "backup-report"
-            SqlQuery: SELECT * FROM "database-774446988871"."backup_report"
+            SqlQuery: SELECT * FROM "database_774446988871"."backup_report"
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -109,7 +109,7 @@ Resources:
                 Type: DECIMAL
             DataSourceArn: !GetAtt CostDataSource.Arn
             Name: "cost-report"
-            SqlQuery: SELECT * FROM "cost-database-774446988871"."cost_report"
+            SqlQuery: SELECT * FROM "cost_database_774446988871"."cost_report"
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -134,7 +134,7 @@ Resources:
         SourceEntity:
           SourceAnalysis:
             Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
-          # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/e19ea927-5534-4c00-837e-06dd196001ed'] ]
+            # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/37575753-1a5d-42b1-afc9-97d311adb13f'] ]
             DataSetReferences:
               - DataSetPlaceholder: DataSet
                 DataSetArn: !GetAtt DataSet.Arn
