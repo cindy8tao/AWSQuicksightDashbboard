@@ -1,8 +1,8 @@
 import boto3
-from functions import backup
-from functions import s3
-from functions import cost
-from functions import glue
+import backup
+import s3
+import cost
+import glue
 from datetime import datetime
 
 #####################################################
@@ -39,11 +39,14 @@ def create_table(account_id, table_name, database_name, column, location):
     glueClass = glue.Glue(account_id, glue_client)
     glueClass.create_table(table_name, database_name, column, location)
 
+# def lambda_handler(event, context):
 
-def lambda_handler(event, context):
+
+def main():
 
     print("Welcome to create your Quicksight Backup Dashboard ")
-    account_id = context.invoked_function_arn.split(":")[4]
+    # account_id = context.invoked_function_arn.split(":")[4]
+    account_id = '774446988871'
 
     bucket_name = "new-backup-report-based-arn-tags-"+account_id
     cost_bucket_name = "cost-report-for-quicksight-"+account_id
@@ -128,3 +131,7 @@ def lambda_handler(event, context):
     location = 's3://cost-report-for-quicksight-' + account_id + date
 
     create_table(account_id, table_name, database_name, column, location)
+
+
+if __name__ == "__main__":
+    main()

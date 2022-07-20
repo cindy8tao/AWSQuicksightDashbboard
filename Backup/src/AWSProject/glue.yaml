@@ -1,6 +1,60 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
+
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service: quicksight.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: AdministratorAccess
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+  
+  # CustomFunction:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Handler: index.lambda_handler
+  #     Description: "GetTime"
+  #     Timeout: 1
+  #     Role: !GetAtt LambdaRole.Arn
+  #     Runtime: python3.9
+  #     Code:
+  #       ZipFile: |
+  #         import json
+  #         import cfnresponse
+
+  #         def lambda_handler(event, context):
+  #           now = datetime.now()
+  #           time = now.strftime("/%m/%d/")
+  #           responseData[Data] = time
+  #           cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+  
+  # CustomResource:
+  #   Type: Custom::Value
+  #   Properties:
+  #     ServiceToken: !GetAtt CustomFunction.Arn
+  #     Time: !Ref CustomFunction
+
   GlueRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -35,6 +89,38 @@ Resources:
       DatabaseInput:
         Name: !Join [ '', [ 'cost-database-' , !Ref 'AWS::AccountId'] ]
 
+  # GlueClassifier:
+  #   Type: 'AWS::Glue::Classifier'
+  #   Properties:
+  #     CsvClassifier:
+  #       AllowSingleColumn: true
+  #       ContainsHeader: PRESENT
+  #       Delimiter: ','
+  #       Header:
+  #         - arnresource
+  #         - resoucetype
+  #         - backupsize
+  #         - department
+  #         - environment
+  #       Name: csvclassify
+  #       QuoteSymbol: '"'
+
+
+  # CostGlueClassifier:
+  #   Type: 'AWS::Glue::Classifier'
+  #   Properties:
+  #     CsvClassifier:
+  #       AllowSingleColumn: true
+  #       ContainsHeader: PRESENT
+  #       Delimiter: ','
+  #       Header:
+  #         - start
+  #         - end
+  #         - tags
+  #         - cost
+  #       Name: costcsvclassify
+  #       QuoteSymbol: '"'
+
   # GlueCrawler:
   #     Type: AWS::Glue::Crawler
   #     Properties:
@@ -43,6 +129,8 @@ Resources:
   #       - GlueRole
   #       - Arn
   #       DatabaseName: !Ref GlueDatabase
+  #       Classifiers:
+  #       - !Ref GlueClassifier
   #       Targets:
   #         S3Targets:
   #           - Path: !Join [ '', [ 'new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId'] ]
@@ -61,6 +149,8 @@ Resources:
   #       - GlueRole
   #       - Arn
   #       DatabaseName: !Ref CostGlueDatabase
+  #       Classifiers:
+  #       - !Ref CostGlueClassifier
   #       Targets:
   #         S3Targets:
   #           - Path: !Join [ '', [ 'cost-report-for-quicksight-' , !Ref 'AWS::AccountId'] ]
@@ -85,6 +175,7 @@ Resources:
           classification: csv
           typeOfData: file
         StorageDescriptor:
+          # Location: !Join [ '', [ 's3://cost-report-for-quicksight-' , !Ref 'AWS::AccountId', !GetAtt CustomResource.Time] ]
           Location: !Join [ '', [ 's3://cost-report-for-quicksight-' , !Ref 'AWS::AccountId', '/07/20/'] ]
           BucketColumns: []
           Columns:

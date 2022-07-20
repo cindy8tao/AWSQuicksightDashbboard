@@ -79,3 +79,38 @@ Resources:
           ConfigDataRefreshScheduleName: RefreshSchedule
       Runtime: python3.9
       Timeout: 300
+
+
+  GlueRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: glue.amazonaws.com
+              Action: 'sts:AssumeRole'
+        Path: /
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action: '*'
+                  Resource: '*'
+
+
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Join [ '', [ 'database-' , !Ref 'AWS::AccountId'] ]
+
+  CostGlueDatabase:
+    Type: AWS::Glue::Database
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Join [ '', [ 'cost-database-' , !Ref 'AWS::AccountId'] ]
