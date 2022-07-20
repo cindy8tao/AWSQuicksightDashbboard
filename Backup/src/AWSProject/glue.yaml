@@ -35,40 +35,107 @@ Resources:
       DatabaseInput:
         Name: !Join [ '', [ 'cost-database-' , !Ref 'AWS::AccountId'] ]
 
-  GlueCrawler:
-      Type: AWS::Glue::Crawler
-      Properties:
-        Name: !Join [ '', [ 'crawler-' , !Ref 'AWS::AccountId'] ]
-        Role: !GetAtt 
-        - GlueRole
-        - Arn
-        DatabaseName: !Ref GlueDatabase
-        Targets:
-          S3Targets:
-            - Path: !Join [ '', [ 'new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId'] ]
-        SchemaChangePolicy:
-          UpdateBehavior: 'UPDATE_IN_DATABASE'
-          DeleteBehavior: 'LOG'
-        Schedule:
-          ScheduleExpression: 'cron(00 00 * * ? *)'
-        Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
+  # GlueCrawler:
+  #     Type: AWS::Glue::Crawler
+  #     Properties:
+  #       Name: !Join [ '', [ 'crawler-' , !Ref 'AWS::AccountId'] ]
+  #       Role: !GetAtt 
+  #       - GlueRole
+  #       - Arn
+  #       DatabaseName: !Ref GlueDatabase
+  #       Targets:
+  #         S3Targets:
+  #           - Path: !Join [ '', [ 'new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId'] ]
+  #       SchemaChangePolicy:
+  #         UpdateBehavior: 'UPDATE_IN_DATABASE'
+  #         DeleteBehavior: 'LOG'
+  #       Schedule:
+  #         ScheduleExpression: 'cron(00 00 * * ? *)'
+  #       Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
 
-  CostGlueCrawler:
-      Type: AWS::Glue::Crawler
-      Properties:
-        Name: !Join [ '', [ 'cost-crawler-' , !Ref 'AWS::AccountId'] ]
-        Role: !GetAtt 
-        - GlueRole
-        - Arn
-        DatabaseName: !Ref CostGlueDatabase
-        Targets:
-          S3Targets:
-            - Path: !Join [ '', [ 'cost-report-for-quicksight-' , !Ref 'AWS::AccountId'] ]
-        SchemaChangePolicy:
-          UpdateBehavior: 'UPDATE_IN_DATABASE'
-          DeleteBehavior: 'LOG'
-        Schedule:
-          ScheduleExpression: 'cron(00 00 * * ? *)'
-        Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
+  # CostGlueCrawler:
+  #     Type: AWS::Glue::Crawler
+  #     Properties:
+  #       Name: !Join [ '', [ 'cost-crawler-' , !Ref 'AWS::AccountId'] ]
+  #       Role: !GetAtt 
+  #       - GlueRole
+  #       - Arn
+  #       DatabaseName: !Ref CostGlueDatabase
+  #       Targets:
+  #         S3Targets:
+  #           - Path: !Join [ '', [ 'cost-report-for-quicksight-' , !Ref 'AWS::AccountId'] ]
+  #       SchemaChangePolicy:
+  #         UpdateBehavior: 'UPDATE_IN_DATABASE'
+  #         DeleteBehavior: 'LOG'
+  #       Schedule:
+  #         ScheduleExpression: 'cron(00 00 * * ? *)'
+  #       Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
 
+
+
+  CostGlueTable:
+    Type: 'AWS::Glue::Table'
+    Properties:
+      CatalogId: !Ref 'AWS::AccountId'
+      DatabaseName: !Ref CostGlueDatabase
+      TableInput:
+        Name: cost_report
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: csv
+          typeOfData: file
+        StorageDescriptor:
+          Location: !Join [ '', [ 's3://cost-report-for-quicksight-' , !Ref 'AWS::AccountId', '/07/20/'] ]
+          BucketColumns: []
+          Columns:
+            - Name: start
+              Type: date
+            - Name: end
+              Type: date
+            - Name: tags
+              Type: string
+            - Name: unblendedcost
+              Type: float
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters:
+              case.insensitive: 'true'
+              field.delim: ','
+              skip.header.line.count: '1'
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
+  GlueTable:
+    Type: 'AWS::Glue::Table'
+    Properties:
+      CatalogId: !Ref 'AWS::AccountId'
+      DatabaseName: !Ref GlueDatabase
+      TableInput:
+        Name: backup_report
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: csv
+          typeOfData: file
+        StorageDescriptor:
+          Location: !Join [ '', [ 's3://new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId', '/07/20/'] ]
+          BucketColumns: []
+          Columns:
+            - Name: resourcearn
+              Type: string
+            - Name: resourcetype
+              Type: string
+            - Name: backupsize
+              Type: decimal
+            - Name: department
+              Type: string
+            - Name: environment
+              Type: string
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters:
+              case.insensitive: 'true'
+              field.delim: ','
+              skip.header.line.count: '1'
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
   

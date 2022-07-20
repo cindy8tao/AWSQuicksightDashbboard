@@ -1076,16 +1076,18 @@ class Quicksight:
         print("Updated cost dataset")
 
 
-# client = boto3.client('quicksight')
-# pp = pprint.PrettyPrinter(indent=4)
+client = boto3.client('quicksight')
+pp = pprint.PrettyPrinter(indent=4)
 
 # response = client.list_data_sets(
 #     AwsAccountId='774446988871'
 # )
 
-# response = client.list_analyses(
-#     AwsAccountId='774446988871'
-# )
+response = client.list_analyses(
+    AwsAccountId='774446988871'
+)
+
+pp.pprint(response)
 
 # response = client.delete_template(
 #     AwsAccountId='774446988871',

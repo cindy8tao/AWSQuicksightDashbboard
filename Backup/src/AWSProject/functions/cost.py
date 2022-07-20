@@ -15,7 +15,7 @@ class Cost:
         response = self.client.get_cost_and_usage(
             TimePeriod={
                 'Start': '2022-07-01',
-                'End': '2022-07-13'
+                'End': '2022-07-20'
             },
             Granularity='DAILY',
             Metrics=[
@@ -32,36 +32,32 @@ class Cost:
         return response
 
     def get_cost_by_tags(self, tags):
-        cost_data = {}
+        cost_data = []
         for tag in tags:
             response = self.get_cost_and_usage(tag)
             size = len(response['ResultsByTime'])
 
             for i in range(size):
-                key = response['ResultsByTime'][i]['Groups'][0]['Keys'][0][:-1]
-                value = float(response['ResultsByTime'][i]['Groups']
-                              [0]['Metrics']['UnblendedCost']['Amount'])
-                if key in cost_data.keys():
-                    cost_data[key] += value
-                else:
-                    cost_data[key] = value
+                row = []
+                tag_response = response['ResultsByTime'][i]['Groups'][0]['Keys'][0][:-1]
+                unblendedcost = float(
+                    response['ResultsByTime'][i]['Groups'][0]['Metrics']['UnblendedCost']['Amount'])
+                start = response['ResultsByTime'][0]['TimePeriod']['End']
+                end = response['ResultsByTime'][0]['TimePeriod']['Start']
+
+                row = [start, end, tag_response, unblendedcost]
+                cost_data.append(row)
 
         self.write_to_csv(cost_data)
 
     def write_to_csv(self, cost_data):
 
-        csv_file = open('/tmp/cost.csv', 'w+')
+        csv_file = open(
+            '/tmp/cost.csv', 'w+')
         csv_writer = csv.writer(csv_file)
-        count = 1
 
-        header = ["Tags", "UnblendedCost"]
+        header = ["StartDate", "EndDate", "Tags", "UnblendedCost"]
         csv_writer.writerow(header)
-        row = []
-
-        for key, value, in cost_data.items():
-            row = [key, value]
-
-            csv_writer.writerow(row)
-            count += 1
+        csv_writer.writerows(cost_data)
 
         csv_file.close()

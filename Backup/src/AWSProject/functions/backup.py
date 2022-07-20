@@ -113,9 +113,6 @@ class Backup:
             self.write_to_csv(data_file, header_list)
             print("Complete writing csv file")
 
-            self.write_to_json(data_file)
-            print("Complete writing json file")
-
         except NameError:
             print("Error listing recovery point with tags")
 
@@ -155,12 +152,3 @@ class Backup:
         csv_writer.writerows(data_file)
 
         csv_file.close()
-
-    def write_to_json(self, data_file):
-
-        with open('/tmp/file.json', 'w') as outfile:
-            outfile.write(json.dumps(data_file))
-            outfile.close()
-
-
-# client = boto3.client('backup')
