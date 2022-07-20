@@ -73,7 +73,7 @@ Resources:
                 Type: STRING
             DataSourceArn: !GetAtt DataSource.Arn
             Name: "backup-report"
-            SqlQuery: SELECT * FROM "database_774446988871"."backup_report"
+            SqlQuery: !Join [ '', [ 'SELECT * FROM "database_' , !Ref 'AWS::AccountId', '"."backup_report"' ] ]
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -109,7 +109,7 @@ Resources:
                 Type: DECIMAL
             DataSourceArn: !GetAtt CostDataSource.Arn
             Name: "cost-report"
-            SqlQuery: SELECT * FROM "cost_database_774446988871"."cost_report"
+            SqlQuery: !Join [ '', [ 'SELECT * FROM "cost_database_' , !Ref 'AWS::AccountId', '"."cost_report"' ] ]
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -131,6 +131,9 @@ Resources:
         TemplateId: !Join [ '', [ 'unique-template-' , !Ref 'AWS::AccountId'] ]
         Name: !Join [ '', [ 'template-' , !Ref 'AWS::AccountId'] ]
         AwsAccountId: !Ref 'AWS::AccountId'
+        # SourceEntity:
+        #   SourceTemplate:
+        #     Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/template-774446988871'
         SourceEntity:
           SourceAnalysis:
             Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
