@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: QuickSight Dashboard for AWS Backup
+
 Parameters:
   QuickSightIdentityRegion:
     Type: String
@@ -9,37 +9,20 @@ Parameters:
     Type: String
     MinLength: 1
     Description: User name of QuickSight author/admin from default namespace.
+
 Resources:
-  ObserverQSDataSource:
-    Type: 'AWS::QuickSight::DataSource'
+  DataSource:
+    Type: AWS::QuickSight::DataSource
     Properties:
-      Name: BoS-For-AWSBackup-DataSource
-      DataSourceId: !Join 
-        - '-'
-        - - BoS-For-AWSBackup-DataSource
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
+      Name: !Join [ '', [ 'datasource-' , !Ref 'AWS::AccountId'] ]
+      DataSourceId: !Join [ '', [ 'unique-datasource-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
       Type: ATHENA
       DataSourceParameters:
         AthenaParameters:
           WorkGroup: primary
       Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
+        - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
             - 'quicksight:UpdateDataSourcePermissions'
             - 'quicksight:DescribeDataSource'
@@ -47,129 +30,52 @@ Resources:
             - 'quicksight:PassDataSource'
             - 'quicksight:UpdateDataSource'
             - 'quicksight:DeleteDataSource'
-  BackupJobReportDS:
+    
+  CostDataSource:
+    Type: AWS::QuickSight::DataSource
+    Properties:
+      Name: !Join [ '', [ 'cost-datasource-' , !Ref 'AWS::AccountId'] ]
+      DataSourceId: !Join [ '', [ 'cost-unique-datasource-' , !Ref 'AWS::AccountId'] ]
+      AwsAccountId: !Ref 'AWS::AccountId'
+      Type: ATHENA
+      DataSourceParameters:
+        AthenaParameters:
+          WorkGroup: primary
+      Permissions:
+        - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
+          Actions:
+            - 'quicksight:UpdateDataSourcePermissions'
+            - 'quicksight:DescribeDataSource'
+            - 'quicksight:DescribeDataSourcePermissions'
+            - 'quicksight:PassDataSource'
+            - 'quicksight:UpdateDataSource'
+            - 'quicksight:DeleteDataSource'
+
+  DataSet:
     Type: 'AWS::QuickSight::DataSet'
     Properties:
-      Name: BackupJobReportDS
-      DataSetId: !Join 
-        - '-'
-        - - BackupJobReportDS
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
+      Name: !Join [ '', [ 'dataset-' , !Ref 'AWS::AccountId'] ]
+      DataSetId: !Join [ '', [ 'unique-dataset-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
       PhysicalTableMap:
-        BackupJobReportPhysicalTable:
+        BackupPhysicalTable:
           CustomSQL:
             Columns:
-              - Name: report_period_start
+              - Name: ResourceArn
                 Type: STRING
-              - Name: report_period_end
+              - Name: ResourceType
                 Type: STRING
-              - Name: backup_job_id
+              - Name: BackupSize
+                Type: DECIMAL
+              - Name: Department
                 Type: STRING
-              - Name: job_status
+              - Name: Environment
                 Type: STRING
-              - Name: status_message
-                Type: STRING
-              - Name: resource_type
-                Type: STRING
-              - Name: resource_arn
-                Type: STRING
-              - Name: backup_plan_arn
-                Type: STRING
-              - Name: backup_rule_id
-                Type: STRING
-              - Name: creation_date
-                Type: STRING
-              - Name: completion_date
-                Type: STRING
-              - Name: expected_completion_date
-                Type: STRING
-              - Name: recoverypoint_arn
-                Type: STRING
-              - Name: job_run_time
-                Type: STRING
-              - Name: backup_size_in_bytes
-                Type: STRING
-              - Name: backup_vault_name
-                Type: STRING
-              - Name: backup_vault_arn
-                Type: STRING
-              - Name: iam_role_arn
-                Type: STRING
-              - Name: region_partition_id
-                Type: STRING
-              - Name: account_partition_id
-                Type: STRING
-              - Name: year
-                Type: STRING
-              - Name: month
-                Type: STRING
-              - Name: day
-                Type: STRING
-              - Name: report_name
-                Type: STRING
-            DataSourceArn: !GetAtt ObserverQSDataSource.Arn
-            Name: backup_job_report
-            SqlQuery: select * from aws_backup_logs_db.backup_job_report
-      LogicalTableMap:
-        BackupJobReportLogicalTable:
-          Alias: BackupJobReportDS
-          DataTransforms:
-            - CreateColumnsOperation:
-                Columns:
-                  - ColumnName: trimReportStartDate
-                    ColumnId: trimReportStartDate-BackupJobReportDS
-                    Expression: 'substring({report_period_start},2,10)'
-                  - ColumnName: trimReportEndDate
-                    ColumnId: trimReportEndDate-BackupJobReportDS
-                    Expression: 'substring({report_period_end},2,10)'
-            - ProjectOperation:
-                ProjectedColumns:
-                  - report_period_start
-                  - report_period_end
-                  - backup_job_id
-                  - job_status
-                  - status_message
-                  - resource_type
-                  - resource_arn
-                  - backup_plan_arn
-                  - backup_rule_id
-                  - creation_date
-                  - completion_date
-                  - expected_completion_date
-                  - recoverypoint_arn
-                  - job_run_time
-                  - backup_size_in_bytes
-                  - backup_vault_name
-                  - backup_vault_arn
-                  - iam_role_arn
-                  - region_partition_id
-                  - account_partition_id
-                  - year
-                  - month
-                  - day
-                  - report_name
-                  - trimReportStartDate
-                  - trimReportEndDate
-          Source:
-            PhysicalTableId: BackupJobReportPhysicalTable
+            DataSourceArn: !GetAtt DataSource.Arn
+            Name: "20"
+            SqlQuery: SELECT * FROM "database-774446988871"."20"
       Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
+        - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
             - 'quicksight:UpdateDataSetPermissions'
             - 'quicksight:DescribeDataSet'
@@ -181,132 +87,89 @@ Resources:
             - 'quicksight:DeleteDataSet'
             - 'quicksight:CreateIngestion'
             - 'quicksight:CancelIngestion'
-      ImportMode: DIRECT_QUERY
-  ObserverQSTheme:
-    Type: 'AWS::QuickSight::Theme'
+      ImportMode: SPICE
+
+  CostDataSet:
+    Type: 'AWS::QuickSight::DataSet'
     Properties:
-      ThemeId: !Join 
-        - '-'
-        - - BoS-For-AWSBackup-Theme
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
-      Name: BoS-For-AWSBackup-Theme
+      Name: !Join [ '', [ 'cost-dataset-' , !Ref 'AWS::AccountId'] ]
+      DataSetId: !Join [ '', [ 'cost-unique-dataset-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
-      BaseThemeId: SEASIDE
-      Configuration:
-        UIColorPalette:
-          PrimaryBackground: '#EEEEEE'
-          SecondaryBackground: '#EEEEEE'
+      PhysicalTableMap:
+        CostPhysicalTable:
+          CustomSQL:
+            Columns:
+              - Name: Tags
+                Type: STRING
+              - Name: UnblendedCost
+                Type: FLOAT
+            DataSourceArn: !GetAtt CostDataSource.Arn
+            Name: "20"
+            SqlQuery: SELECT * FROM "cost-database-774446988871"."20"
       Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
+        - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
-            - 'quicksight:UpdateThemeAlias'
-            - 'quicksight:ListThemeVersions'
-            - 'quicksight:UpdateThemePermissions'
-            - 'quicksight:DescribeThemeAlias'
-            - 'quicksight:DeleteThemeAlias'
-            - 'quicksight:DeleteTheme'
-            - 'quicksight:ListThemeAliases'
-            - 'quicksight:DescribeTheme'
-            - 'quicksight:CreateThemeAlias'
-            - 'quicksight:UpdateTheme'
-            - 'quicksight:DescribeThemePermissions'
-      VersionDescription: Initial version
-  ObserverQSTemplate:
-    Type: 'AWS::QuickSight::Template'
-    Properties:
-      TemplateId: !Join 
-        - '-'
-        - - BoS-For-AWSBackup-Template
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
-      Name: BoS-For-AWSBackup-Template
-      AwsAccountId: !Ref 'AWS::AccountId'
-      SourceEntity:
-        SourceTemplate:
-          Arn: !Sub >-
-            arn:${AWS::Partition}:quicksight:us-west-2:166211809176:template/BoS-For-AWSBackup-Template-20-Oct-2021-Shareable
-      Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
-          Actions:
-            - 'quicksight:DescribeTemplate'
-      VersionDescription: Observer for AWS Backup Initial Version
-  ObserverQSAnalysis:
+            - 'quicksight:UpdateDataSetPermissions'
+            - 'quicksight:DescribeDataSet'
+            - 'quicksight:DescribeDataSetPermissions'
+            - 'quicksight:PassDataSet'
+            - 'quicksight:DescribeIngestion'
+            - 'quicksight:ListIngestions'
+            - 'quicksight:UpdateDataSet'
+            - 'quicksight:DeleteDataSet'
+            - 'quicksight:CreateIngestion'
+            - 'quicksight:CancelIngestion'
+      ImportMode: SPICE
+
+  Template:
+      Type: 'AWS::QuickSight::Template'
+      Properties:
+        TemplateId: !Join [ '', [ 'unique-template-' , !Ref 'AWS::AccountId'] ]
+        Name: !Join [ '', [ 'template-' , !Ref 'AWS::AccountId'] ]
+        AwsAccountId: !Ref 'AWS::AccountId'
+        SourceEntity:
+          SourceAnalysis:
+            # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':unique-analysis-', !Ref 'AWS::AccountId'] ]
+            Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/e19ea927-5534-4c00-837e-06dd196001ed'] ]
+            DataSetReferences:
+              - DataSetPlaceholder: DataSet
+                DataSetArn: !GetAtt DataSet.Arn
+              - DataSetPlaceholder: CostDataSet
+                DataSetArn: !GetAtt CostDataSet.Arn
+        Permissions:
+          - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
+            Actions:
+              - 'quicksight:DescribeTemplate'
+              - 'quicksight:UpdateTemplatePermissions'
+              - 'quicksight:DescribeTemplatePermissions'
+              - 'quicksight:UpdateTemplateAlias'
+              - 'quicksight:DeleteTemplateAlias'
+              - 'quicksight:DescribeTemplateAlias'
+              - 'quicksight:ListTemplateAliases'
+              - 'quicksight:ListTemplates'
+              - 'quicksight:CreateTemplateAlias'
+              - 'quicksight:DeleteTemplate'
+              - 'quicksight:UpdateTemplate'
+              - 'quicksight:ListTemplateVersions'
+              - 'quicksight:DescribeTemplate'
+              - 'quicksight:CreateTemplate'
+
+  Analysis:
     Type: 'AWS::QuickSight::Analysis'
     Properties:
-      Name: BoS-For-AWSBackup-Analysis
-      AnalysisId: !Join 
-        - '-'
-        - - BoS-For-AWSBackup-Analysis
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
+      Name: !Join [ '', [ 'analysis-' , !Ref 'AWS::AccountId'] ]
+      AnalysisId: !Join [ '', [ 'unique-analysis-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
       SourceEntity:
         SourceTemplate:
-          Arn: !GetAtt ObserverQSTemplate.Arn
+          Arn: !GetAtt Template.Arn
           DataSetReferences:
-            - DataSetPlaceholder: BackupJobDS
-              DataSetArn: !GetAtt BackupJobDS.Arn
-            - DataSetPlaceholder: BackupJobReportDS
-              DataSetArn: !GetAtt BackupJobReportDS.Arn
-            - DataSetPlaceholder: RestoreJobDS
-              DataSetArn: !GetAtt RestoreJobDS.Arn
-            - DataSetPlaceholder: RestoreJobReportDS
-              DataSetArn: !GetAtt RestoreJobReportDS.Arn
-            - DataSetPlaceholder: CopyJobDS
-              DataSetArn: !GetAtt CopyJobDS.Arn
-            - DataSetPlaceholder: CopyJobReportDS
-              DataSetArn: !GetAtt CopyJobReportDS.Arn
-            - DataSetPlaceholder: ConfigDS
-              DataSetArn: !GetAtt ConfigDS.Arn
-            - DataSetPlaceholder: ControlComplianceReportDS
-              DataSetArn: !GetAtt ControlComplianceReportDS.Arn
-            - DataSetPlaceholder: ResourceComplianceReportDS
-              DataSetArn: !GetAtt ResourceComplianceReportDS.Arn
+          - DataSetPlaceholder: DataSet
+            DataSetArn: !GetAtt DataSet.Arn
+          - DataSetPlaceholder: CostDataSet
+            DataSetArn: !GetAtt CostDataSet.Arn
       Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
+        - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
             - 'quicksight:RestoreAnalysis'
             - 'quicksight:UpdateAnalysisPermissions'
@@ -315,66 +178,3 @@ Resources:
             - 'quicksight:QueryAnalysis'
             - 'quicksight:DescribeAnalysis'
             - 'quicksight:UpdateAnalysis'
-      ThemeArn: !GetAtt ObserverQSTheme.Arn
-  ObserverQSDashboard:
-    Type: 'AWS::QuickSight::Dashboard'
-    Properties:
-      Name: BoS-For-AWSBackup-Dashboard
-      DashboardId: !Join 
-        - '-'
-        - - BoS-For-AWSBackup-Dashboard
-          - !Select 
-            - 0
-            - !Split 
-              - '-'
-              - !Select 
-                - 2
-                - !Split 
-                  - /
-                  - !Ref 'AWS::StackId'
-      AwsAccountId: !Ref 'AWS::AccountId'
-      SourceEntity:
-        SourceTemplate:
-          Arn: !GetAtt ObserverQSTemplate.Arn
-          DataSetReferences:
-            - DataSetPlaceholder: BackupJobDS
-              DataSetArn: !GetAtt BackupJobDS.Arn
-            - DataSetPlaceholder: BackupJobReportDS
-              DataSetArn: !GetAtt BackupJobReportDS.Arn
-            - DataSetPlaceholder: RestoreJobDS
-              DataSetArn: !GetAtt RestoreJobDS.Arn
-            - DataSetPlaceholder: RestoreJobReportDS
-              DataSetArn: !GetAtt RestoreJobReportDS.Arn
-            - DataSetPlaceholder: CopyJobDS
-              DataSetArn: !GetAtt CopyJobDS.Arn
-            - DataSetPlaceholder: CopyJobReportDS
-              DataSetArn: !GetAtt CopyJobReportDS.Arn
-            - DataSetPlaceholder: ConfigDS
-              DataSetArn: !GetAtt ConfigDS.Arn
-            - DataSetPlaceholder: ControlComplianceReportDS
-              DataSetArn: !GetAtt ControlComplianceReportDS.Arn
-            - DataSetPlaceholder: ResourceComplianceReportDS
-              DataSetArn: !GetAtt ResourceComplianceReportDS.Arn
-      Permissions:
-        - Principal: !Join 
-            - ''
-            - - !Sub 'arn:${AWS::Partition}:quicksight:'
-              - !Ref QuickSightIdentityRegion
-              - ':'
-              - !Ref 'AWS::AccountId'
-              - ':user/default/'
-              - !Ref QuickSightUser
-          Actions:
-            - 'quicksight:DescribeDashboard'
-            - 'quicksight:ListDashboardVersions'
-            - 'quicksight:UpdateDashboardPermissions'
-            - 'quicksight:QueryDashboard'
-            - 'quicksight:UpdateDashboard'
-            - 'quicksight:DeleteDashboard'
-            - 'quicksight:DescribeDashboardPermissions'
-            - 'quicksight:UpdateDashboardPublishedVersion'
-      ThemeArn: !GetAtt ObserverQSTheme.Arn
-      DashboardPublishOptions:
-        AdHocFilteringOption:
-          AvailabilityStatus: DISABLED
-    

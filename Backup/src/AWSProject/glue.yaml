@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  GlueRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+
+
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Join [ '', [ 'database-' , !Ref 'AWS::AccountId'] ]
+
+  CostGlueDatabase:
+    Type: AWS::Glue::Database
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Join [ '', [ 'cost-database-' , !Ref 'AWS::AccountId'] ]
+
+  GlueCrawler:
+      Type: AWS::Glue::Crawler
+      Properties:
+        Name: !Join [ '', [ 'crawler-' , !Ref 'AWS::AccountId'] ]
+        Role: !GetAtt 
+        - GlueRole
+        - Arn
+        DatabaseName: !Ref GlueDatabase
+        Targets:
+          S3Targets:
+            - Path: !Join [ '', [ 'new-backup-report-based-arn-tags-' , !Ref 'AWS::AccountId'] ]
+        SchemaChangePolicy:
+          UpdateBehavior: 'UPDATE_IN_DATABASE'
+          DeleteBehavior: 'LOG'
+        Schedule:
+          ScheduleExpression: 'cron(00 00 * * ? *)'
+        Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
+
+  CostGlueCrawler:
+      Type: AWS::Glue::Crawler
+      Properties:
+        Name: !Join [ '', [ 'cost-crawler-' , !Ref 'AWS::AccountId'] ]
+        Role: !GetAtt 
+        - GlueRole
+        - Arn
+        DatabaseName: !Ref CostGlueDatabase
+        Targets:
+          S3Targets:
+            - Path: !Join [ '', [ 'cost-report-for-quicksight-' , !Ref 'AWS::AccountId'] ]
+        SchemaChangePolicy:
+          UpdateBehavior: 'UPDATE_IN_DATABASE'
+          DeleteBehavior: 'LOG'
+        Schedule:
+          ScheduleExpression: 'cron(00 00 * * ? *)'
+        Configuration: "{\"Version\":1.0,\"Grouping\":{\"TableLevelConfiguration\":3}}"
+
+  

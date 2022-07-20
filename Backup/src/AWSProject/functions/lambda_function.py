@@ -181,20 +181,3 @@ def lambda_handler(event, context):
     path = "/tmp/cost.csv"
     upload_to_S3(account_id, path, cost_bucket_name,
                  cost_csv_file_name, csv_content_type)
-
-    # ####################################################
-    # # Quicksight                                       #
-    # ####################################################
-
-    # now = datetime.now()
-    # folder_name = now.strftime("%m/%d/%Y")
-    # data_source_id = 'unique-data-source-id-' + account_id
-    # name = 'datasource' + account_id
-    # bucket = 'new-backup-report-based-arn-tags-' + account_id
-    # key = folder_name + '/manifest.json'
-
-    # create_datasource(account_id, data_source_id, name, bucket, key)
-    # create_dataset(account_id, tags)
-    # create_template(account_id)
-    # create_analysis(account_id)
-    # create_dashboard(account_id)
