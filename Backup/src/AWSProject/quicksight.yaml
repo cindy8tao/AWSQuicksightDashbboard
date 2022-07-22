@@ -20,7 +20,7 @@ Resources:
       Type: ATHENA
       DataSourceParameters:
         AthenaParameters:
-          WorkGroup: primary
+          WorkGroup: default
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -40,7 +40,7 @@ Resources:
       Type: ATHENA
       DataSourceParameters:
         AthenaParameters:
-          WorkGroup: primary
+          WorkGroup: default
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
           Actions:
@@ -57,19 +57,26 @@ Resources:
       Name: !Join [ '', [ 'dataset-' , !Ref 'AWS::AccountId'] ]
       DataSetId: !Join [ '', [ 'unique-dataset-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
+      IngestionWaitPolicy: 
+        IngestionWaitTimeInHours: 6
+        WaitForSpiceIngestion: true
       PhysicalTableMap:
         BackupPhysicalTable:
           CustomSQL:
             Columns:
+              - Name: CreationDate
+                Type: DATETIME
+              - Name: CompletionDate
+                Type: DATETIME
               - Name: ResourceArn
                 Type: STRING
               - Name: ResourceType
                 Type: STRING
               - Name: BackupSize
                 Type: DECIMAL
-              - Name: Department
+              - Name: TagKey
                 Type: STRING
-              - Name: Environment
+              - Name: TagValue
                 Type: STRING
             DataSourceArn: !GetAtt DataSource.Arn
             Name: "backup-report"
@@ -95,6 +102,9 @@ Resources:
       Name: !Join [ '', [ 'cost-dataset-' , !Ref 'AWS::AccountId'] ]
       DataSetId: !Join [ '', [ 'cost-unique-dataset-' , !Ref 'AWS::AccountId'] ]
       AwsAccountId: !Ref 'AWS::AccountId'
+      IngestionWaitPolicy: 
+        IngestionWaitTimeInHours: 6
+        WaitForSpiceIngestion: true
       PhysicalTableMap:
         CostPhysicalTable:
           CustomSQL:
@@ -133,11 +143,11 @@ Resources:
         AwsAccountId: !Ref 'AWS::AccountId'
         # SourceEntity:
         #   SourceTemplate:
-        #     Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/template-774446988871'
+        #     Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/unique-template-774446988871'
         SourceEntity:
           SourceAnalysis:
-            Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
-            # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/37575753-1a5d-42b1-afc9-97d311adb13f'] ]
+            # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
+            Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/77effe0e-683f-4a0f-acb3-fe7c1e84f6d5'] ]
             DataSetReferences:
               - DataSetPlaceholder: DataSet
                 DataSetArn: !GetAtt DataSet.Arn

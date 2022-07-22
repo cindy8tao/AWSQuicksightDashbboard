@@ -3,7 +3,10 @@ from functions import backup
 from functions import s3
 from functions import cost
 from functions import glue
+from functions import quicksight
+from functions import cfnresponse
 from datetime import datetime
+import json
 
 #####################################################
 # Create the required clients and resources         #
@@ -13,6 +16,7 @@ s3_resource = boto3.resource('s3')
 backup_client = boto3.client('backup')
 cost_client = boto3.client('ce')
 glue_client = boto3.client('glue')
+quicksight_client = boto3.client('quicksight')
 
 
 def list_all_tags(account_id):
@@ -38,6 +42,26 @@ def get_cost_by_tags(account_id, tags):
 def create_table(account_id, table_name, database_name, column, location):
     glueClass = glue.Glue(account_id, glue_client)
     glueClass.create_table(table_name, database_name, column, location)
+
+
+def set_template_permissions(account_id):
+    quicksightClass = quicksight.Quicksight(account_id, quicksight_client)
+    quicksightClass.set_template_permissions()
+
+
+responseStatus = 'SUCCESS'
+
+
+def getResponse(event, context, responseStatus):
+    responseBody = {'Status': responseStatus,
+                    'PhysicalResourceId': context.log_stream_name,
+                    'StackId': event['StackId'],
+                    'RequestId': event['RequestId'],
+                    'LogicalResourceId': event['LogicalResourceId'],
+                    }
+    responseBody = json.dumps(responseBody)
+
+    return responseBody
 
 
 def lambda_handler(event, context):
@@ -79,6 +103,14 @@ def lambda_handler(event, context):
     table_name = 'backup_report'
     column = [
         {
+            'Name': 'creationdate',
+            'Type': 'date',
+        },
+        {
+            'Name': 'completiondate',
+            'Type': 'date',
+        },
+        {
             'Name': 'resourcearn',
             'Type': 'string',
         },
@@ -91,11 +123,11 @@ def lambda_handler(event, context):
             'Type': 'decimal',
         },
         {
-            'Name': 'department',
+            'Name': 'tagkey',
             'Type': 'string',
         },
         {
-            'Name': 'environment',
+            'Name': 'tagvalue',
             'Type': 'string',
         },
     ]
@@ -109,11 +141,11 @@ def lambda_handler(event, context):
     column = [
         {
             'Name': 'start',
-            'Type': 'datetime',
+            'Type': 'date',
         },
         {
             'Name': 'end',
-            'Type': 'datetime',
+            'Type': 'date',
         },
         {
             'Name': 'tags',
@@ -128,3 +160,13 @@ def lambda_handler(event, context):
     location = 's3://cost-report-for-quicksight-' + account_id + date
 
     create_table(account_id, table_name, database_name, column, location)
+
+    #####################################################
+    # Set Quicksight Template Permission                #
+    #####################################################
+
+    set_template_permissions(account_id)
+
+    responseData = {}
+    cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+    return

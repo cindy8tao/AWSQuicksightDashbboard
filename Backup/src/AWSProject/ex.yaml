@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+
+  LambdaBasicExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyLambdaRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:            
+            - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  LambdaFunctionTest:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaBasicExecutionRole
+    Properties:
+      FunctionName: LambdaFunctionTest
+      Description: Lambda Function to test that Custom Resource works
+      Handler: index.handler
+      Runtime: python3.6
+      Role: !GetAtt LambdaBasicExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          import cfnresponse
+
+          def handler(event, context):
+            print('This is in the handler')
+
+            responseData = {}
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+            return
+
+  CustomFunctionTest:
+    Type: Custom::CustomFunctionTest
+    Properties:
+      ServiceToken: !GetAtt LambdaFunctionTest.Arn

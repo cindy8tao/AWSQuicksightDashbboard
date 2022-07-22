@@ -16,7 +16,6 @@ class Backup:
 
             size = len(response['RecoveryPoints'])
             data_file = []
-            header_list = []
 
             for i in range(size):
                 resource_arn = response['RecoveryPoints'][i]['RecoveryPointArn']
@@ -24,29 +23,28 @@ class Backup:
                     ResourceArn=resource_arn
 
                 )
-                row = []
+
                 tag = tags['Tags']
                 resource_type = response['RecoveryPoints'][i]['ResourceType']
                 backup_size = response['RecoveryPoints'][i]['BackupSizeInBytes']
+                creation_date = str(
+                    response['RecoveryPoints'][i]['CreationDate'].date())
+                completion_date = str(
+                    response['RecoveryPoints'][i]['CompletionDate'].date())
 
-                row.append(resource_arn)
-                row.append(resource_type)
-                row.append(backup_size)
+                tag_size = len(tag)
 
-                if (len(tag.values()) == 0):
-                    row.append(" ")
-                    row.append(" ")
+                if tag_size == 0:
+                    row = [creation_date, completion_date, resource_arn,
+                           resource_type, backup_size, " ", " "]
+                    data_file.append(row)
                 else:
-                    for type_of_tag in tag.values():
-                        row.append(type_of_tag)
+                    for i in range(tag_size):
+                        row = [creation_date, completion_date, resource_arn, resource_type, backup_size,
+                               list(tag.keys())[i], list(tag.values())[i]]
+                        data_file.append(row)
 
-                data_file.append(row)
-                if tags['Tags'] != {}:
-                    for key in list(tags['Tags'].keys()):
-                        if key not in header_list:
-                            header_list.append(key)
-
-            self.write_to_csv(data_file, header_list)
+            self.write_to_csv(data_file)
             print("Complete writing csv file")
 
         except NameError:
@@ -59,7 +57,6 @@ class Backup:
         )
 
         size = len(response['RecoveryPoints'])
-        data_file = {}
         tags_list = []
 
         for i in range(size):
@@ -68,8 +65,6 @@ class Backup:
                 ResourceArn=resource_arn
 
             )
-            data_file[resource_arn] = [tags['Tags'],
-                                       response['RecoveryPoints'][0]['ResourceType']]
             if tags['Tags'] != {}:
                 for key in list(tags['Tags'].keys()):
                     if key not in tags_list:
@@ -77,13 +72,12 @@ class Backup:
 
         return tags_list
 
-    def write_to_csv(self, data_file, header_list):
+    def write_to_csv(self, data_file):
         csv_file = open('/tmp/csv_file.csv', 'w')
         csv_writer = csv.writer(csv_file)
 
-        header = ["ResourceArn", "ResourceType", "BackupSize"]
-        for h in header_list:
-            header.append(h)
+        header = ["CreationDate", "CompletionDate", "ResourceArn", "ResourceType",
+                  "BackupSize", "TagKey", "TagValue"]
         csv_writer.writerow(header)
         csv_writer.writerows(data_file)
 
