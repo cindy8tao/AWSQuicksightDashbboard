@@ -49,19 +49,9 @@ def set_template_permissions(account_id):
     quicksightClass.set_template_permissions()
 
 
-responseStatus = 'SUCCESS'
-
-
-def getResponse(event, context, responseStatus):
-    responseBody = {'Status': responseStatus,
-                    'PhysicalResourceId': context.log_stream_name,
-                    'StackId': event['StackId'],
-                    'RequestId': event['RequestId'],
-                    'LogicalResourceId': event['LogicalResourceId'],
-                    }
-    responseBody = json.dumps(responseBody)
-
-    return responseBody
+def set_analysis_permissions(account_id):
+    quicksightClass = quicksight.Quicksight(account_id, quicksight_client)
+    quicksightClass.set_analysis_permission()
 
 
 def lambda_handler(event, context):
@@ -166,6 +156,7 @@ def lambda_handler(event, context):
     #####################################################
 
     set_template_permissions(account_id)
+    set_analysis_permissions(account_id)
 
     responseData = {}
     cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)

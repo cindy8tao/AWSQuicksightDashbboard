@@ -141,18 +141,17 @@ Resources:
         TemplateId: !Join [ '', [ 'unique-template-' , !Ref 'AWS::AccountId'] ]
         Name: !Join [ '', [ 'template-' , !Ref 'AWS::AccountId'] ]
         AwsAccountId: !Ref 'AWS::AccountId'
-        # SourceEntity:
-        #   SourceTemplate:
-        #     Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/unique-template-774446988871'
         SourceEntity:
-          SourceAnalysis:
-            # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
-            Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/77effe0e-683f-4a0f-acb3-fe7c1e84f6d5'] ]
-            DataSetReferences:
-              - DataSetPlaceholder: DataSet
-                DataSetArn: !GetAtt DataSet.Arn
-              - DataSetPlaceholder: CostDataSet
-                DataSetArn: !GetAtt CostDataSet.Arn
+          SourceTemplate:
+            Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/sharable-template-for-backup-in-quicksight'
+          # SourceAnalysis:
+          #   # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
+          #   Arn: 'arn:aws:quicksight:us-east-1:774446988871:analysis/sharable-analysis-for-backup-in-quicksight'
+          #   DataSetReferences:
+          #     - DataSetPlaceholder: DataSet
+          #       DataSetArn: !GetAtt DataSet.Arn
+          #     - DataSetPlaceholder: CostDataSet
+          #       DataSetArn: !GetAtt CostDataSet.Arn
         Permissions:
           - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
             Actions:
@@ -181,9 +180,9 @@ Resources:
         SourceTemplate:
           Arn: !GetAtt Template.Arn
           DataSetReferences:
-          - DataSetPlaceholder: DataSet
+          - DataSetPlaceholder: BackupData
             DataSetArn: !GetAtt DataSet.Arn
-          - DataSetPlaceholder: CostDataSet
+          - DataSetPlaceholder: CostData
             DataSetArn: !GetAtt CostDataSet.Arn
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
@@ -206,9 +205,9 @@ Resources:
         SourceTemplate:
           Arn: !GetAtt Template.Arn
           DataSetReferences:
-            - DataSetPlaceholder: DataSet
+            - DataSetPlaceholder: BackupData
               DataSetArn: !GetAtt DataSet.Arn
-            - DataSetPlaceholder: CostDataSet
+            - DataSetPlaceholder: CostData
               DataSetArn: !GetAtt CostDataSet.Arn
       Permissions:
         - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
@@ -221,3 +220,5 @@ Resources:
             - 'quicksight:DeleteDashboard'
             - 'quicksight:DescribeDashboardPermissions'
             - 'quicksight:UpdateDashboardPublishedVersion'
+
+
