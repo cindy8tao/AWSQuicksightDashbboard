@@ -143,15 +143,7 @@ Resources:
         AwsAccountId: !Ref 'AWS::AccountId'
         SourceEntity:
           SourceTemplate:
-            Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:774446988871:template/sharable-template-for-backup-in-quicksight'
-          # SourceAnalysis:
-          #   # Arn: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId',':analysis/unique-analysis-', !Ref 'AWS::AccountId'] ]
-          #   Arn: 'arn:aws:quicksight:us-east-1:774446988871:analysis/sharable-analysis-for-backup-in-quicksight'
-          #   DataSetReferences:
-          #     - DataSetPlaceholder: DataSet
-          #       DataSetArn: !GetAtt DataSet.Arn
-          #     - DataSetPlaceholder: CostDataSet
-          #       DataSetArn: !GetAtt CostDataSet.Arn
+            Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
         Permissions:
           - Principal: !Join [ '', [ 'arn:aws:quicksight:us-east-1:' , !Ref 'AWS::AccountId', ':user/default/',!Ref 'QuickSightUser' ] ]
             Actions:

@@ -1,4 +1,4 @@
-›AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
   BackupReportBucket:
@@ -79,7 +79,7 @@ Resources:
       - AWSBackupRole
       - Arn
       Code:
-        S3Bucket: function-for-lambda
+        S3Bucket: bucket-for-my-function
         S3Key: functions.zip
       Environment: 
         Variables:
@@ -87,10 +87,10 @@ Resources:
       Runtime: python3.9
       Timeout: 300
   
-  # TriggerLambdaFunction:
-  #   Type: Custom::TriggerLambdaFunction
-  #   Properties:
-  #     ServiceToken: !GetAtt LambdaFunctions.Arn
+  TriggerLambdaFunction:
+    Type: Custom::TriggerLambdaFunction
+    Properties:
+      ServiceToken: !GetAtt LambdaFunctions.Arn
 
 
   GlueRole:

@@ -155,8 +155,7 @@ def lambda_handler(event, context):
     # Set Quicksight Template Permission                #
     #####################################################
 
-    set_template_permissions(account_id)
-    set_analysis_permissions(account_id)
+    # set_template_permissions(account_id)
 
     responseData = {}
     cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
