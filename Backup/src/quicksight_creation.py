@@ -227,25 +227,25 @@ client = boto3.client('quicksight')
 #     }
 # )
 
-response = client.update_template(
-    AwsAccountId='263675971756',
-    TemplateId='sharable-template-for-backup-in-quicksight',
-    SourceEntity={
-        'SourceAnalysis': {
-            'Arn': 'arn:aws:quicksight:us-east-1:263675971756:analysis/sharable-analysis-for-backup-in-quicksight',
-            'DataSetReferences': [
-                {
-                    'DataSetPlaceholder': 'BackupData',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
-                },
-                {
-                    'DataSetPlaceholder': 'CostData',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
-                }
-            ]
-        }
-    }
-)
+# response = client.update_template(
+#     AwsAccountId='263675971756',
+#     TemplateId='sharable-template-for-backup-in-quicksight',
+#     SourceEntity={
+#         'SourceAnalysis': {
+#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:analysis/sharable-analysis-for-backup-in-quicksight',
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'BackupData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+#                 },
+#                 {
+#                     'DataSetPlaceholder': 'CostData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+#                 }
+#             ]
+#         }
+#     }
+# )
 
 # response = client.create_analysis(
 #     AwsAccountId='263675971756',
@@ -319,18 +319,38 @@ response = client.update_template(
 # )
 # print("Successfully created dashboard")
 
-# response = client.list_dashboards(
-#     AwsAccountId='263675971756',
-# )
-# pprint.PrettyPrinter(indent=4).pprint(response)
-
-# response = client.delete_template(
-#     AwsAccountId='263675971756',
-#     TemplateId='unique-template-263675971756',
-# )
 
 # response = client.list_templates(
 #     AwsAccountId='263675971756',
 # )
 
-# pprint.PrettyPrinter(indent=4).pprint(response)
+# response = client.describe_template_permissions(
+#     AwsAccountId='263675971756',
+#     TemplateId='sharable-template-for-backup-in-quicksight'
+# )
+
+
+response = client.update_template_permissions(
+    AwsAccountId='263675971756',
+    TemplateId='sharable-template-for-backup-in-quicksight',
+    GrantPermissions=[
+        {
+            'Principal': 'arn:aws:iam::744878436330:root',
+            'Actions': [
+                'quicksight:UpdateTemplate',
+                'quicksight:UpdateTemplatePermissions',
+                'quicksight:DescribeTemplatePermissions',
+                'quicksight:UpdateTemplateAlias',
+                'quicksight:DeleteTemplateAlias',
+                'quicksight:DescribeTemplateAlias',
+                'quicksight:ListTemplateVersions',
+                'quicksight:DescribeTemplate',
+                'quicksight:ListTemplateAliases',
+                'quicksight:CreateTemplateAlias',
+                'quicksight:DeleteTemplate'
+            ]
+        },
+    ]
+)
+
+pprint.PrettyPrinter(indent=4).pprint(response)

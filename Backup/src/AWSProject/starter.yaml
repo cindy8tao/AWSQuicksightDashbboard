@@ -85,7 +85,7 @@ Resources:
         Variables:
           ConfigDataRefreshScheduleName: RefreshSchedule
       Runtime: python3.9
-      Timeout: 300
+      Timeout: 5
   
   TriggerLambdaFunction:
     Type: Custom::TriggerLambdaFunction

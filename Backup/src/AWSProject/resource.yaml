@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  Region:
+    Type: String
+    MinLength: 1
+    Description: Enter the region where resources will be configured.
+  NumberOfS3:
+    Type: String
+    Description: How many S3 Bucket would you like to create?
+  NumberOfEC2:
+    Type: String
+    Description: How many EC2 would you like to create?
+  NumberOfPlan:
+    Type: String
+    Description: How many Backup plan would you like to create?
+  AMIImageID:
+    Type: String
+    Description: AMI Image ID (example = ami-0cff7528ff583bf9a)
+  NumberOfRDS:
+    Type: String
+    Description: How many RDS would you like to create?
+  DBInstanceClass:
+    Type: String
+    Description: DB instance class (example = db.t2.micro, db.m5.large)
+  Engine:
+    Type: String
+    Description: Engine (example = aurora, mysql, postgres)
+  AllocatedStorage:
+    Type: String
+    Description: Allocated Storage (minimum integer 5)
+  MasterUsername:
+    Type: String
+    Description: Master Username (example= testpw0021)
+  MasterPassword:
+    Type: String
+    Description: Master Password
+  BackupPlanName:
+    Type: String
+    Description: Backup Plan Name (example = 12hrs)
+  RuleName:
+    Type: String
+    Description: Rule Name (example = RunEvery12Hours)
+  StartWindowMinutes:
+    Type: String
+    Description: Start Window Minutes (minimum value = 60)
+  CompletionWindowMinutes:
+    Type: String
+    Description: Completion Window Minutes (must be 60 > Start Window)
+  ScheduleExpression:
+    Type: String
+    Description: Schedule Expression (example = cron(0 12 * * ? *))
+  TargetBackupVaultName:
+    Type: String
+    Description: Target Backup Vault Name (example = Default)
+
+Resources:
+  ResourceRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: AdministratorAccess
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action: '*'
+                  Resource: '*'
+
+  ResourceLambdaFunctions:
+    Type: 'AWS::Lambda::Function'
+    Properties: 
+      Handler: resources/lambda_function.lambda_handler
+      Role: !GetAtt 
+      - ResourceRole
+      - Arn
+      Runtime: python3.9
+      Timeout: 5
+      Code:
+        S3Bucket: bucket-for-my-function
+        S3Key: resources.zip
+      Environment: 
+        Variables:
+          NumberOfS3: !Ref NumberOfS3
+          NumberOfEC2: !Ref NumberOfEC2
+          NumberOfRDS: !Ref NumberOfRDS
+          NumberOfPlan: !Ref NumberOfPlan
+          DBInstanceClass: !Ref DBInstanceClass
+          Engine: !Ref Engine
+          AllocatedStorage: !Ref AllocatedStorage
+          MasterUsername: !Ref MasterUsername
+          MasterPassword: !Ref MasterPassword
+          AMIImageID: !Ref AMIImageID
+          BackupPlanName: !Ref BackupPlanName
+          RuleName: !Ref RuleName
+          StartWindowMinutes: !Ref StartWindowMinutes
+          CompletionWindowMinutes: !Ref CompletionWindowMinutes
+          ScheduleExpression: !Ref ScheduleExpression
+          TargetBackupVaultName: !Ref TargetBackupVaultName
+          
+
+          
+
+
+
+    
+    # TriggerResourceLambdaFunctions:
+    #   Type: Custom::ResourceLambdaFunctions
+    #   Properties:
+    #     ServiceToken: !GetAtt ResourceLambdaFunctions.Arn
