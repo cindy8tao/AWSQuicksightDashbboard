@@ -99,7 +99,7 @@ def lambda_handler(event, context):
         },
         {
             'Name': 'backupsize',
-            'Type': 'decimal',
+            'Type': 'float',
         },
         {
             'Name': 'tagkey',

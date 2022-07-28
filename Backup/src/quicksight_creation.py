@@ -232,7 +232,7 @@ client = boto3.client('quicksight')
 #     TemplateId='sharable-template-for-backup-in-quicksight',
 #     SourceEntity={
 #         'SourceAnalysis': {
-#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:analysis/sharable-analysis-for-backup-in-quicksight',
+#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:analysis/unique-analysis-263675971756',
 #             'DataSetReferences': [
 #                 {
 #                     'DataSetPlaceholder': 'BackupData',
@@ -247,27 +247,28 @@ client = boto3.client('quicksight')
 #     }
 # )
 
-# response = client.update_analysis(
-#     AwsAccountId='263675971756',
-#     AnalysisId='sharable-analysis-for-backup-in-quicksight',
-#     Name='sharable-analysis-for-backup-in-quicksight',
-#     SourceEntity={
-#         'SourceTemplate': {
-#             'DataSetReferences': [
-#                 {
-#                     'DataSetPlaceholder': 'BackupData',
-#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
-#                 },
-#                 {
-#                     'DataSetPlaceholder': 'CostData',
-#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
-#                 }
-#             ],
-#             'Arn': 'arn:aws:quicksight:us-east-1:'+'263675971756'+':template/sharable-template-for-backup-in-quicksight'
-#         }
-#     }
-# )
-# print("Successfully updated analysis")
+
+response = client.update_analysis(
+    AwsAccountId='263675971756',
+    AnalysisId='sharable-analysis-for-backup-in-quicksight',
+    Name='sharable-analysis-for-backup-in-quicksight',
+    SourceEntity={
+        'SourceTemplate': {
+            'DataSetReferences': [
+                {
+                    'DataSetPlaceholder': 'BackupData',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+                },
+                {
+                    'DataSetPlaceholder': 'CostData',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+                }
+            ],
+            'Arn': 'arn:aws:quicksight:us-east-1:'+'263675971756'+':template/sharable-template-for-backup-in-quicksight'
+        }
+    }
+)
+print("Successfully updated analysis")
 
 # response = client.create_analysis(
 #     AwsAccountId='263675971756',
@@ -304,27 +305,27 @@ client = boto3.client('quicksight')
 #     }
 # )
 
-response = client.update_analysis(
-    AwsAccountId='263675971756',
-    AnalysisId='unique-analysis-263675971756',
-    Name='unique-analysis-263675971756',
-    SourceEntity={
-        'SourceTemplate': {
-            'DataSetReferences': [
-                {
-                    'DataSetPlaceholder': 'BackupData',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
-                },
-                {
-                    'DataSetPlaceholder': 'CostData',
-                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
-                }
-            ],
-            'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
-        }
-    },
-    ThemeArn='arn:aws:quicksight::aws:theme/MIDNIGHT'
-)
+# response = client.update_analysis(
+#     AwsAccountId='263675971756',
+#     AnalysisId='unique-analysis-263675971756',
+#     Name='unique-analysis-263675971756',
+#     SourceEntity={
+#         'SourceTemplate': {
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'BackupData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+#                 },
+#                 {
+#                     'DataSetPlaceholder': 'CostData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+#                 }
+#             ],
+#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
+#         }
+#     },
+#     ThemeArn='arn:aws:quicksight::aws:theme/MIDNIGHT'
+# )
 
 # response = client.create_dashboard(
 #     AwsAccountId='263675971756',
@@ -357,7 +358,7 @@ response = client.update_analysis(
 #                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
 #                 }
 #             ],
-#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/unique-template-263675971756'
+#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
 #         }
 #     }
 # )
@@ -401,5 +402,28 @@ response = client.update_analysis(
 # response = client.list_themes(
 #     AwsAccountId='263675971756',
 # )
+
+
+# response = client.update_dashboard(
+#     AwsAccountId='263675971756',
+#     DashboardId='unique-dashboard-263675971756',
+#     Name='dashboard-263675971756',
+#     SourceEntity={
+#         'SourceTemplate': {
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'BackupData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+#                 },
+#                 {
+#                     'DataSetPlaceholder': 'CostData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+#                 }
+#             ],
+#             'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
+#         }
+#     }
+# )
+# print("Successfully updated dashboard")
 
 # pprint.PrettyPrinter(indent=4).pprint(response)

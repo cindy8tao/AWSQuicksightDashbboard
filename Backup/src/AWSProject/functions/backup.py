@@ -43,7 +43,6 @@ class Backup:
                         row = [creation_date, completion_date, resource_arn, resource_type, backup_size,
                                list(tag.keys())[i], list(tag.values())[i]]
                         data_file.append(row)
-
             self.write_to_csv(data_file)
             print("Complete writing csv file")
 

@@ -16,9 +16,9 @@ glue_client = boto3.client('glue')
 quicksight_client = boto3.client('quicksight')
 
 
-# def list_all_tags(account_id):
-#     backupClass = backup.Backup(account_id, backup_client)
-#     backupClass.list_recovery_points_with_tags()
+def list_all_tags(account_id):
+    backupClass = backup.Backup(account_id, backup_client)
+    backupClass.list_recovery_points_with_tags()
 
 
 # def upload_to_S3(account_id, path, bucket_name, key, content_type):
@@ -84,9 +84,8 @@ def main():
     # cost_update_data_set(account_id)
     # update_analysis(account_id)
     # update_dashboard(account_id)
-    tags = get_tags(account_id)
-    get_cost_by_tags(account_id, tags)
-    print("Finished")
+    # tags = get_tags(account_id)
+    # get_cost_by_tags(account_id, tags)
 
     # bucket_name = "new-backup-report-based-arn-tags-"+account_id
     # cost_bucket_name = "cost-report-for-quicksight-"+account_id
@@ -98,7 +97,7 @@ def main():
     # # Create the backup/cost report                     #
     # #####################################################
 
-    # # list_all_tags(account_id)
+    list_all_tags(account_id)
 
     # tags = get_tags(account_id)
     # get_cost_by_tags(account_id, tags)
