@@ -1,4 +1,6 @@
 import csv
+from datetime import datetime
+import pprint
 
 
 class Cost:
@@ -8,10 +10,13 @@ class Cost:
         self.client = client
 
     def get_cost_and_usage(self, tag):
+        now = datetime.now()
+        date = now.strftime("%Y-%m-%d")
+
         response = self.client.get_cost_and_usage(
             TimePeriod={
-                'Start': '2022-06-01',
-                'End': '2022-07-20'
+                'Start': '2022-01-01',
+                'End': date
             },
             Granularity='DAILY',
             Metrics=[
@@ -49,29 +54,27 @@ class Cost:
             size = len(response['ResultsByTime'])
 
             for i in range(size):
-                estimate = response['ResultsByTime'][i]['Estimated']
-                if (not estimate):
-                    row = []
-                    start = response['ResultsByTime'][i]['TimePeriod']['Start']
-                    end = response['ResultsByTime'][i]['TimePeriod']['End']
+                row = []
+                start = response['ResultsByTime'][i]['TimePeriod']['Start']
+                end = response['ResultsByTime'][i]['TimePeriod']['End']
 
-                    if len(response['ResultsByTime'][i]['Groups']) == 0:
-                        tag_response = " "
-                        unblendedcost = float(
-                            response['ResultsByTime'][i]['Total']['UnblendedCost']['Amount'])
-                    else:
-                        tag_response = response['ResultsByTime'][i]['Groups'][0]['Keys'][0][:-1]
-                        unblendedcost = float(
-                            response['ResultsByTime'][i]['Groups'][0]['Metrics']['UnblendedCost']['Amount'])
+                if len(response['ResultsByTime'][i]['Groups']) == 0:
+                    tag_response = " "
+                    unblendedcost = float(
+                        response['ResultsByTime'][i]['Total']['UnblendedCost']['Amount'])
+                else:
+                    tag_response = response['ResultsByTime'][i]['Groups'][0]['Keys'][0][:-1]
+                    unblendedcost = float(
+                        response['ResultsByTime'][i]['Groups'][0]['Metrics']['UnblendedCost']['Amount'])
 
-                    row = [start, end, tag_response, unblendedcost]
-                    cost_data.append(row)
+                row = [start, end, tag_response, unblendedcost]
+                cost_data.append(row)
 
         self.write_to_csv(cost_data)
 
     def write_to_csv(self, cost_data):
 
-        csv_file = open('/tmp/cost.csv', 'w+')
+        csv_file = open('/tmp/cost.csv', 'w')
         csv_writer = csv.writer(csv_file)
 
         header = ["StartDate", "EndDate", "Tags", "UnblendedCost"]

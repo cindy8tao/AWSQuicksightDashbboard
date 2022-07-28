@@ -3,7 +3,6 @@ from functions import backup
 from functions import s3
 from functions import cost
 from functions import glue
-from functions import quicksight
 from functions import cfnresponse
 from datetime import datetime
 import json
@@ -42,16 +41,6 @@ def get_cost_by_tags(account_id, tags):
 def create_table(account_id, table_name, database_name, column, location):
     glueClass = glue.Glue(account_id, glue_client)
     glueClass.create_table(table_name, database_name, column, location)
-
-
-def set_template_permissions(account_id):
-    quicksightClass = quicksight.Quicksight(account_id, quicksight_client)
-    quicksightClass.set_template_permissions()
-
-
-def set_analysis_permissions(account_id):
-    quicksightClass = quicksight.Quicksight(account_id, quicksight_client)
-    quicksightClass.set_analysis_permission()
 
 
 def lambda_handler(event, context):
@@ -151,12 +140,7 @@ def lambda_handler(event, context):
 
     create_table(account_id, table_name, database_name, column, location)
 
-    #####################################################
-    # Set Quicksight Template Permission                #
-    #####################################################
-
-    # set_template_permissions(account_id)
-
     responseData = {}
     cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+
     return

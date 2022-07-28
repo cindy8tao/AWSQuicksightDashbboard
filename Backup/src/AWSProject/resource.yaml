@@ -81,7 +81,7 @@ Resources:
       - ResourceRole
       - Arn
       Runtime: python3.9
-      Timeout: 5
+      Timeout: 300
       Code:
         S3Bucket: bucket-for-my-function
         S3Key: resources.zip

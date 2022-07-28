@@ -247,6 +247,28 @@ client = boto3.client('quicksight')
 #     }
 # )
 
+# response = client.update_analysis(
+#     AwsAccountId='263675971756',
+#     AnalysisId='sharable-analysis-for-backup-in-quicksight',
+#     Name='sharable-analysis-for-backup-in-quicksight',
+#     SourceEntity={
+#         'SourceTemplate': {
+#             'DataSetReferences': [
+#                 {
+#                     'DataSetPlaceholder': 'BackupData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+#                 },
+#                 {
+#                     'DataSetPlaceholder': 'CostData',
+#                     'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+#                 }
+#             ],
+#             'Arn': 'arn:aws:quicksight:us-east-1:'+'263675971756'+':template/sharable-template-for-backup-in-quicksight'
+#         }
+#     }
+# )
+# print("Successfully updated analysis")
+
 # response = client.create_analysis(
 #     AwsAccountId='263675971756',
 #     AnalysisId='sharable-analysis-for-backup-in-quicksight',
@@ -281,6 +303,28 @@ client = boto3.client('quicksight')
 #         }
 #     }
 # )
+
+response = client.update_analysis(
+    AwsAccountId='263675971756',
+    AnalysisId='unique-analysis-263675971756',
+    Name='unique-analysis-263675971756',
+    SourceEntity={
+        'SourceTemplate': {
+            'DataSetReferences': [
+                {
+                    'DataSetPlaceholder': 'BackupData',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/unique-dataset-263675971756'
+                },
+                {
+                    'DataSetPlaceholder': 'CostData',
+                    'DataSetArn': 'arn:aws:quicksight:us-east-1:263675971756:dataset/cost-unique-dataset-263675971756'
+                }
+            ],
+            'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
+        }
+    },
+    ThemeArn='arn:aws:quicksight::aws:theme/MIDNIGHT'
+)
 
 # response = client.create_dashboard(
 #     AwsAccountId='263675971756',
@@ -330,27 +374,32 @@ client = boto3.client('quicksight')
 # )
 
 
-response = client.update_template_permissions(
-    AwsAccountId='263675971756',
-    TemplateId='sharable-template-for-backup-in-quicksight',
-    GrantPermissions=[
-        {
-            'Principal': 'arn:aws:iam::744878436330:root',
-            'Actions': [
-                'quicksight:UpdateTemplate',
-                'quicksight:UpdateTemplatePermissions',
-                'quicksight:DescribeTemplatePermissions',
-                'quicksight:UpdateTemplateAlias',
-                'quicksight:DeleteTemplateAlias',
-                'quicksight:DescribeTemplateAlias',
-                'quicksight:ListTemplateVersions',
-                'quicksight:DescribeTemplate',
-                'quicksight:ListTemplateAliases',
-                'quicksight:CreateTemplateAlias',
-                'quicksight:DeleteTemplate'
-            ]
-        },
-    ]
-)
+# response = client.update_template_permissions(
+#     AwsAccountId='263675971756',
+#     TemplateId='sharable-template-for-backup-in-quicksight',
+#     GrantPermissions=[
+#         {
+#             'Principal': 'arn:aws:iam::744878436330:root',
+#             'Actions': [
+#                 'quicksight:UpdateTemplate',
+#                 'quicksight:UpdateTemplatePermissions',
+#                 'quicksight:DescribeTemplatePermissions',
+#                 'quicksight:UpdateTemplateAlias',
+#                 'quicksight:DeleteTemplateAlias',
+#                 'quicksight:DescribeTemplateAlias',
+#                 'quicksight:ListTemplateVersions',
+#                 'quicksight:DescribeTemplate',
+#                 'quicksight:ListTemplateAliases',
+#                 'quicksight:CreateTemplateAlias',
+#                 'quicksight:DeleteTemplate'
+#             ]
+#         },
+#     ]
+# )
 
-pprint.PrettyPrinter(indent=4).pprint(response)
+
+# response = client.list_themes(
+#     AwsAccountId='263675971756',
+# )
+
+# pprint.PrettyPrinter(indent=4).pprint(response)

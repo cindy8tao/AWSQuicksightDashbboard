@@ -186,7 +186,8 @@ Resources:
             - 'quicksight:QueryAnalysis'
             - 'quicksight:DescribeAnalysis'
             - 'quicksight:UpdateAnalysis'
-
+      ThemeArn: 'arn:aws:quicksight::aws:theme/MIDNIGHT'
+      
   Dashboard:
     Type: 'AWS::QuickSight::Dashboard'
     Properties:
@@ -195,7 +196,7 @@ Resources:
       AwsAccountId: !Ref 'AWS::AccountId'
       SourceEntity:
         SourceTemplate:
-          Arn: !GetAtt Template.Arn
+          Arn: !Sub 'arn:${AWS::Partition}:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
           DataSetReferences:
             - DataSetPlaceholder: BackupData
               DataSetArn: !GetAtt DataSet.Arn
@@ -212,5 +213,75 @@ Resources:
             - 'quicksight:DeleteDashboard'
             - 'quicksight:DescribeDashboardPermissions'
             - 'quicksight:UpdateDashboardPublishedVersion'
+
+  QuicksightPermissionForEventsToInvokeLambda:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref QuicksightLambdaFunctions
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt QuicksightRefreshSchedule.Arn
+
+  QuicksightRefreshSchedule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: Trigger Lambda
+      Name: QuicksightRefreshSchedule
+      ScheduleExpression: cron(0 */12 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt
+          - QuicksightLambdaFunctions
+          - Arn
+          Id: QuicksightRefreshSchedule
+    
+  QuicksightBackupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service: quicksight.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: AdministratorAccess
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+
+  QuicksightLambdaFunctions:
+    Type: 'AWS::Lambda::Function'
+    Properties: 
+      Handler: quicksight/lambda_function.lambda_handler
+      Role: !GetAtt 
+      - QuicksightBackupRole
+      - Arn
+      Code:
+        S3Bucket: bucket-for-my-function
+        S3Key: quicksight.zip
+      Environment: 
+        Variables:
+          ConfigDataRefreshScheduleName: QuicksightRefreshSchedule
+      Runtime: python3.9
+      Timeout: 300
+  
+  QuicksightTriggerLambdaFunction:
+    Type: Custom::QuicksightTriggerLambdaFunction
+    Properties:
+      ServiceToken: !GetAtt QuicksightLambdaFunctions.Arn
 
 
