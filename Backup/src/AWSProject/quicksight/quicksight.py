@@ -158,7 +158,7 @@ class Quicksight:
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/cost-unique-dataset-'+self.account_id
                             }
                         ],
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/sharable-template-for-backup-in-quicksight'
+                        'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
                     }
                 },
                 ThemeArn='arn:aws:quicksight::aws:theme/MIDNIGHT'
@@ -185,7 +185,7 @@ class Quicksight:
                                 'DataSetArn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':dataset/cost-unique-dataset-'+self.account_id
                             }
                         ],
-                        'Arn': 'arn:aws:quicksight:us-east-1:'+self.account_id+':template/sharable-template-for-backup-in-quicksight'
+                        'Arn': 'arn:aws:quicksight:us-east-1:263675971756:template/sharable-template-for-backup-in-quicksight'
                     }
                 }
             )
