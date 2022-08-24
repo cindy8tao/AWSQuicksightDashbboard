@@ -21,4 +21,4 @@ Goal of Project:
 
 
 Reference:
-https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS.html
+https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
