@@ -24,4 +24,4 @@ Reference:
 https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 
 Demonstration Video:
-https://youtu.be/d-c4Zk0G-mY
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/youtu.be/d-c4Zk0G-mY/0.jpg)](https://www.youtube.com/watch?v=youtu.be/d-c4Zk0G-mY)
